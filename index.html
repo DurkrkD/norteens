@@ -1,0 +1,1345 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Norteens · Protótipo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,400;1,9..144,500&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --cream:#F7F0E6; --cream-2:#F1E7D8; --card:#FFFDF8;
+    --ink:#2B2A26; --ink-soft:#726A5F;
+    --terra:#E07A5F; --terra-d:#C9654B;
+    --sage:#7E8E5B; --sage-d:#67754A;
+    --navy:#1C2A3A; --navy-2:#243B52; --mustard:#E8B04B;
+    --line:rgba(28,42,58,.10);
+    --radius:22px; --radius-s:14px;
+    --shadow:0 14px 34px -16px rgba(28,42,58,.24);
+    --shadow-s:0 6px 18px -10px rgba(28,42,58,.20);
+    --serif:'Fraunces',Georgia,'Times New Roman',serif;
+    --sans:'Inter',system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
+    --wrap:1160px;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{margin:0;background:var(--cream);color:var(--ink);font-family:var(--sans);
+    font-size:16px;line-height:1.6;-webkit-font-smoothing:antialiased}
+  h1,h2,h3,h4{font-family:var(--serif);font-weight:500;line-height:1.12;margin:0;letter-spacing:-.01em}
+  p{margin:0}
+  a{color:inherit;text-decoration:none}
+  em{font-style:italic}
+  .wrap{max-width:var(--wrap);margin:0 auto;padding:0 24px}
+  .serif-i{font-style:italic;color:var(--terra)}
+
+  /* ---------- header ---------- */
+  .topbar{position:sticky;top:0;z-index:50;background:var(--cream);
+    backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+  .topbar .row{display:flex;align-items:center;gap:22px;height:66px}
+  .brand{display:flex;align-items:center;gap:9px;font-family:var(--serif);
+    font-weight:600;font-size:20px;letter-spacing:-.02em;cursor:pointer}
+  .brand .mark{width:26px;height:26px;flex:none}
+  .nav{display:flex;gap:4px;margin-left:6px;flex-wrap:wrap}
+  .nav a{padding:8px 11px;border-radius:10px;font-size:14.5px;color:var(--ink-soft);
+    font-weight:500;cursor:pointer;transition:.18s}
+  .nav a:hover{color:var(--ink);background:rgba(28,42,58,.05)}
+  .nav a.nav-active{color:var(--terra-d);background:rgba(224,122,95,.12)}
+  .actions{margin-left:auto;display:flex;align-items:center;gap:10px}
+  .menu-toggle{display:none;border:1px solid var(--line);background:var(--card);
+    border-radius:10px;width:42px;height:40px;cursor:pointer;align-items:center;justify-content:center}
+  .menu-toggle svg{width:20px;height:20px}
+
+  /* ---------- buttons ---------- */
+  .btn{display:inline-flex;align-items:center;gap:8px;font-family:var(--sans);
+    font-weight:600;font-size:15px;border-radius:999px;padding:11px 20px;cursor:pointer;
+    border:1px solid transparent;transition:.18s;white-space:nowrap}
+  .btn svg{width:16px;height:16px}
+  .btn-primary{background:var(--terra);color:#fff;box-shadow:0 8px 20px -10px rgba(224,122,95,.8)}
+  .btn-primary:hover{background:var(--terra-d);transform:translateY(-1px)}
+  .btn-ghost{background:transparent;border-color:var(--line);color:var(--ink)}
+  .btn-ghost:hover{background:rgba(28,42,58,.05)}
+  .btn-dark{background:var(--navy);color:#fff}
+  .btn-dark:hover{background:#12202e;transform:translateY(-1px)}
+  .btn-light{background:var(--card);color:var(--navy);border-color:rgba(255,255,255,.4)}
+  .btn-sm{padding:8px 15px;font-size:14px}
+
+  /* ---------- pages ---------- */
+  .page{display:none;animation:fade .45s ease}
+  .page.active{display:block}
+  @keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+  .eyebrow{font-family:var(--sans);font-weight:600;font-size:12.5px;letter-spacing:.14em;
+    text-transform:uppercase;color:var(--sage-d)}
+  .lead{color:var(--ink-soft);font-size:17px;max-width:60ch}
+  .section{padding:70px 0}
+  .center{text-align:center}
+
+  /* ---------- hero ---------- */
+  .hero{padding:64px 0 40px}
+  .hero-grid{display:grid;grid-template-columns:1.05fr .95fr;gap:40px;align-items:center}
+  .hero h1{font-size:clamp(2.5rem,4.6vw,3.7rem);line-height:1.06}
+  .hero .lead{margin-top:20px;font-size:18px}
+  .hero-cta{display:flex;gap:12px;margin-top:28px;flex-wrap:wrap}
+  .hero-tag{display:flex;align-items:center;gap:10px;margin-top:26px;color:var(--ink-soft);font-size:14px}
+  .avatars{display:flex}
+  .avatars span{width:30px;height:30px;border-radius:50%;border:2px solid var(--cream);margin-left:-8px}
+  .hero-art{width:100%;height:auto}
+
+  /* ---------- steps ---------- */
+  .steps-head{text-align:center;margin-bottom:44px}
+  .steps{display:grid;grid-template-columns:repeat(3,1fr);gap:22px}
+  .step{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+    padding:28px;position:relative;box-shadow:var(--shadow-s)}
+  .step .n{font-family:var(--serif);font-size:15px;color:var(--terra);font-weight:600}
+  .step .ic{width:46px;height:46px;border-radius:13px;display:flex;align-items:center;
+    justify-content:center;margin:14px 0 16px}
+  .step h3{font-size:1.25rem;margin-bottom:8px}
+  .step p{color:var(--ink-soft);font-size:14.5px}
+  .ic svg{width:24px;height:24px}
+  .bg-terra{background:rgba(224,122,95,.14);color:var(--terra-d)}
+  .bg-sage{background:rgba(126,142,91,.16);color:var(--sage-d)}
+  .bg-mustard{background:rgba(232,176,75,.18);color:#b3811f}
+  .bg-navy{background:rgba(28,42,58,.09);color:var(--navy)}
+
+  /* ---------- features ---------- */
+  .band-2{background:var(--cream-2)}
+  .features{display:grid;grid-template-columns:repeat(4,1fr);gap:20px;margin-top:42px}
+  .feature{background:var(--card);border:1px solid var(--line);border-radius:var(--radius-s);padding:22px}
+  .feature .ic{width:40px;height:40px;border-radius:11px;margin-bottom:14px}
+  .feature h4{font-size:1.05rem;margin-bottom:6px}
+  .feature p{color:var(--ink-soft);font-size:13.5px}
+
+  /* ---------- quote (dark) ---------- */
+  .quote{background:var(--navy);color:#F4EFE6;border-radius:30px;padding:66px 40px;
+    text-align:center;position:relative;overflow:hidden}
+  .quote .dots span{position:absolute;border-radius:50%}
+  .quote blockquote{font-family:var(--serif);font-size:clamp(1.4rem,2.6vw,2.1rem);
+    line-height:1.32;max-width:20ch;margin:0 auto;position:relative}
+  .quote .who{margin-top:26px;font-family:var(--sans);font-size:14px;opacity:.7;position:relative}
+  .quote .who b{display:block;font-size:15px;opacity:1;margin-bottom:2px}
+  .orbit{width:66px;height:66px;border-radius:50%;margin:0 auto 22px;
+    background:linear-gradient(135deg,var(--terra),var(--mustard));position:relative}
+
+  /* ---------- cta band ---------- */
+  .ctaband{background:linear-gradient(120deg,#E88A6F,#E07A5F);color:#fff;border-radius:26px;
+    padding:44px;display:flex;align-items:center;justify-content:space-between;gap:24px;flex-wrap:wrap}
+  .ctaband h2{font-size:1.9rem;color:#fff}
+  .ctaband p{opacity:.92;margin-top:6px}
+
+  /* ---------- footer ---------- */
+  footer{background:var(--navy);color:#CFC9BE;margin-top:20px}
+  .foot{display:grid;grid-template-columns:1.6fr 1fr 1fr 1fr;gap:30px;padding:56px 0 30px}
+  .foot .brand{color:#fff}
+  .foot p{font-size:14px;margin-top:14px;max-width:34ch;color:#B9B2A6}
+  .foot h5{font-family:var(--sans);font-size:13px;letter-spacing:.08em;text-transform:uppercase;
+    color:#8f897d;margin:0 0 14px}
+  .foot a{display:block;font-size:14.5px;color:#CFC9BE;padding:5px 0;cursor:pointer}
+  .foot a:hover{color:#fff}
+  .foot-bottom{border-top:1px solid rgba(255,255,255,.09);padding:18px 0;
+    display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px;font-size:13px;color:#8f897d}
+  .social{display:flex;gap:10px}
+  .social a{width:34px;height:34px;border-radius:9px;background:rgba(255,255,255,.08);
+    display:flex;align-items:center;justify-content:center}
+  .social svg{width:16px;height:16px}
+
+  /* ---------- login ---------- */
+  .auth{display:grid;grid-template-columns:1fr 1fr;gap:0;min-height:calc(100vh - 66px)}
+  .auth-left{background:var(--navy);padding:34px;display:grid;
+    grid-template-columns:repeat(4,1fr);gap:12px;align-content:center}
+  .tile{aspect-ratio:1;border-radius:16px;display:flex;align-items:center;justify-content:center}
+  .tile svg{width:34px;height:34px;color:#fff;opacity:.92}
+  .auth-right{display:flex;flex-direction:column;justify-content:center;align-items:center;
+    text-align:center;padding:40px;gap:16px}
+  .auth-right h2{font-size:2rem}
+  .auth-card{width:100%;max-width:330px;display:flex;flex-direction:column;gap:12px;margin-top:8px}
+  .field{width:100%;padding:13px 16px;border:1px solid var(--line);border-radius:12px;
+    background:var(--card);font-family:var(--sans);font-size:15px}
+  .gbtn{display:flex;align-items:center;justify-content:center;gap:10px;padding:12px;
+    border:1px solid var(--line);border-radius:12px;background:var(--card);cursor:pointer;font-weight:600;font-size:15px}
+  .divider{display:flex;align-items:center;gap:12px;color:var(--ink-soft);font-size:13px;margin:4px 0}
+  .divider::before,.divider::after{content:"";height:1px;background:var(--line);flex:1}
+
+  /* ---------- welcome ---------- */
+  .welcome{min-height:calc(100vh - 66px);display:flex;align-items:center;justify-content:center;
+    background:radial-gradient(circle at 30% 30%,#FBF4E9,var(--cream));position:relative;overflow:hidden}
+  .welcome-in{text-align:center;position:relative;z-index:2}
+  .welcome h2{font-size:clamp(2rem,4vw,3rem);margin:22px 0 4px}
+  .welcome .u{font-style:italic;color:var(--terra)}
+
+  /* ---------- teste ---------- */
+  .quiz{max-width:760px;margin:0 auto}
+  .qcard{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+    padding:34px;margin-bottom:22px;box-shadow:var(--shadow-s)}
+  .qcard .qn{font-size:13px;color:var(--sage-d);font-weight:600;letter-spacing:.1em;text-transform:uppercase}
+  .qcard h3{font-size:1.4rem;margin:10px 0 24px}
+  .slider{width:100%;-webkit-appearance:none;appearance:none;height:8px;border-radius:99px;
+    background:linear-gradient(90deg,var(--sage),var(--mustard),var(--terra));outline:none}
+  .slider::-webkit-slider-thumb{-webkit-appearance:none;width:26px;height:26px;border-radius:50%;
+    background:var(--navy);border:4px solid var(--card);cursor:pointer;box-shadow:var(--shadow-s)}
+  .slider::-moz-range-thumb{width:22px;height:22px;border-radius:50%;background:var(--navy);
+    border:4px solid var(--card);cursor:pointer}
+  .ends{display:flex;justify-content:space-between;gap:20px;margin-top:14px;font-size:13.5px;color:var(--ink-soft)}
+  .ends span{max-width:44%}
+  .ends span:last-child{text-align:right}
+
+  /* ---------- resultado ---------- */
+  .res-head{text-align:center;margin-bottom:34px}
+  .res-badge{width:60px;height:60px;border-radius:50%;margin:0 auto 16px;
+    background:linear-gradient(135deg,var(--navy),var(--navy-2));display:flex;align-items:center;justify-content:center}
+  .res-badge svg{width:28px;height:28px;color:#fff}
+  .res-main{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+    padding:32px;box-shadow:var(--shadow-s);max-width:820px;margin:0 auto}
+  .res-main h2{font-size:1.7rem}
+  .bars{margin:22px 0}
+  .bar{display:flex;align-items:center;gap:14px;margin:12px 0}
+  .bar .lb{width:120px;font-size:14px;font-weight:500}
+  .bar .track{flex:1;height:12px;background:var(--cream-2);border-radius:99px;overflow:hidden}
+  .bar .fill{height:100%;border-radius:99px}
+  .bar .pc{width:44px;text-align:right;font-size:13px;color:var(--ink-soft);font-weight:600}
+  .res-cols{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:8px}
+  .rc{border:1px solid var(--line);border-radius:var(--radius-s);padding:18px}
+  .rc h4{font-size:1.02rem;margin-bottom:8px;display:flex;align-items:center;gap:8px}
+  .rc h4 svg{width:18px;height:18px;color:var(--sage-d)}
+  .rc p,.rc li{color:var(--ink-soft);font-size:14px}
+  .rc ul{margin:0;padding-left:18px}
+  .note{background:rgba(232,176,75,.14);border:1px solid rgba(232,176,75,.4);border-radius:var(--radius-s);
+    padding:16px;margin-top:16px;font-size:14px;color:#8a651b}
+  .prof-list{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-top:14px}
+  .prof-pill{border:1px solid var(--line);border-radius:12px;padding:13px 14px;font-size:14px;
+    font-weight:500;display:flex;align-items:center;gap:9px;cursor:pointer;background:var(--card)}
+  .prof-pill:hover{border-color:var(--terra);color:var(--terra-d)}
+  .prof-pill svg{width:18px;height:18px;color:var(--terra)}
+
+  /* ---------- explorar ---------- */
+  .explore{min-height:calc(100vh - 66px);display:flex;align-items:center;justify-content:center;
+    background:radial-gradient(circle at 70% 20%,#FBF4E9,var(--cream));position:relative;overflow:hidden}
+  .explore-in{text-align:center;position:relative;z-index:2;max-width:520px}
+  .explore h2{font-size:clamp(1.8rem,4vw,2.6rem)}
+  .select-wrap{margin:24px auto 8px;max-width:360px;text-align:left}
+  select.field{appearance:none;width:100%;cursor:pointer;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23726A5F' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+    background-repeat:no-repeat;background-position:right 16px center}
+  .quick{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:16px}
+  .chip{border:1px solid var(--line);background:var(--card);border-radius:99px;padding:8px 15px;
+    font-size:14px;cursor:pointer}
+  .chip:hover{border-color:var(--sage);color:var(--sage-d)}
+
+  /* ---------- profissão ---------- */
+  .prof-title{text-align:center;font-size:clamp(2rem,4vw,2.8rem);font-style:italic;margin:8px 0 26px}
+  .gallery{display:grid;grid-template-columns:repeat(5,1fr);grid-auto-rows:96px;gap:12px;margin-bottom:36px}
+  .gcell{border-radius:14px;overflow:hidden;display:flex;align-items:center;justify-content:center}
+  .gcell svg{width:34px;height:34px;color:rgba(255,255,255,.9)}
+  .gcell.big{grid-row:span 2;grid-column:span 2}
+  .info-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+  .info{background:var(--card);border:1px solid var(--line);border-radius:var(--radius-s);padding:22px}
+  .info.full{grid-column:1/-1}
+  .info h4{font-size:1.05rem;margin-bottom:8px;display:flex;align-items:center;gap:9px}
+  .info h4 svg{width:19px;height:19px;color:var(--terra)}
+  .info p{color:var(--ink-soft);font-size:14.5px}
+  .info .money{font-family:var(--serif);font-size:1.5rem;color:var(--sage-d)}
+  .tagrow{display:flex;flex-wrap:wrap;gap:8px;margin-top:4px}
+  .mini{background:var(--cream-2);border-radius:8px;padding:5px 11px;font-size:13px;font-weight:500}
+
+  /* ---------- famosos ---------- */
+  .fama-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:22px;margin-top:34px}
+  .fama{text-align:center}
+  .fama .port{aspect-ratio:1;border-radius:20px;margin-bottom:14px;display:flex;
+    align-items:flex-end;justify-content:center;overflow:hidden;position:relative}
+  .fama .port svg{width:70%;height:70%}
+  .fama h4{font-style:italic;font-size:1.15rem}
+  .fama p{color:var(--ink-soft);font-size:13px;margin-top:4px}
+
+  /* ---------- generic listing (opp/conteudos/noticias/comunidade) ---------- */
+  .grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-top:34px}
+  .grid2{display:grid;grid-template-columns:repeat(2,1fr);gap:20px;margin-top:34px}
+  .lc{background:var(--card);border:1px solid var(--line);border-radius:var(--radius-s);padding:22px;
+    display:flex;flex-direction:column;gap:10px}
+  .tag{align-self:flex-start;font-size:12px;font-weight:600;letter-spacing:.04em;padding:4px 11px;border-radius:99px}
+  .t-terra{background:rgba(224,122,95,.14);color:var(--terra-d)}
+  .t-sage{background:rgba(126,142,91,.16);color:var(--sage-d)}
+  .t-mustard{background:rgba(232,176,75,.2);color:#a9781b}
+  .t-navy{background:rgba(28,42,58,.09);color:var(--navy)}
+  .lc h4{font-size:1.15rem}
+  .lc .meta{font-size:13px;color:var(--ink-soft)}
+  .lc .link{color:var(--terra-d);font-weight:600;font-size:14px;cursor:pointer;margin-top:auto}
+  .chips{display:flex;flex-wrap:wrap;gap:9px;margin-top:26px;justify-content:center}
+  .post{display:flex;gap:14px;align-items:flex-start}
+  .post .pfp{width:44px;height:44px;border-radius:50%;flex:none}
+  .post .pn{font-weight:600;font-size:14.5px}
+  .post .pt{font-size:13px;color:var(--ink-soft)}
+
+  .page-hero{text-align:center;padding:20px 0 4px}
+  .page-hero h2{font-size:clamp(1.9rem,4vw,2.7rem)}
+  .page-hero .serif-i{font-style:italic}
+  .page-hero p{color:var(--ink-soft);margin-top:10px}
+
+  /* ---------- responsive ---------- */
+  @media(max-width:980px){
+    .nav{display:none;position:absolute;top:66px;left:0;right:0;background:var(--cream);
+      border-bottom:1px solid var(--line);flex-direction:column;padding:12px 18px;gap:2px}
+    .nav.open{display:flex}
+    .nav a{padding:11px}
+    .menu-toggle{display:flex}
+    .hero-grid{grid-template-columns:1fr;gap:24px}
+    .hero-art{max-width:440px;margin:0 auto}
+    .features{grid-template-columns:1fr 1fr}
+    .foot{grid-template-columns:1fr 1fr}
+    .auth{grid-template-columns:1fr}
+    .auth-left{min-height:220px}
+    .gallery{grid-template-columns:repeat(3,1fr)}
+    .fama-grid{grid-template-columns:1fr 1fr}
+  }
+  @media(max-width:640px){
+    .steps,.grid3,.grid2,.info-grid,.res-cols,.prof-list,.prof-list{grid-template-columns:1fr}
+    .features{grid-template-columns:1fr}
+    .foot{grid-template-columns:1fr}
+    .ctaband{padding:30px}
+    .quote{padding:44px 24px}
+    .fama-grid{grid-template-columns:1fr 1fr}
+    .section{padding:48px 0}
+  }
+  :focus-visible{outline:3px solid rgba(224,122,95,.55);outline-offset:2px;border-radius:6px}
+  @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+  /* characters */
+  .ch{display:block}
+  .tile{overflow:hidden;position:relative}
+  .tile .ch{position:absolute;left:50%;bottom:-10%;transform:translateX(-50%);width:100%;height:auto}
+  .fama .port .ch{height:88%;width:auto;margin:0 auto}
+  .welcome-char{width:184px;height:auto;margin:0 auto}
+  .orbit{overflow:hidden}
+  .orbit .ch{position:absolute;left:50%;bottom:-40%;transform:translateX(-50%);width:150%;height:auto}
+  .name-field{font-family:var(--serif);font-style:italic;font-size:clamp(1.7rem,3.6vw,2.5rem);color:var(--terra);text-align:center;border:none;border-bottom:2px dashed rgba(224,122,95,.5);background:transparent;outline:none;max-width:340px;width:100%;padding:2px 6px;margin-top:8px}
+  .name-field::placeholder{color:rgba(224,122,95,.4)}
+  /* settings + gear */
+  .gear{width:40px;height:40px;border-radius:10px;border:1px solid var(--line);background:var(--card);display:flex;align-items:center;justify-content:center;cursor:pointer}
+  .gear svg{width:19px;height:19px;color:var(--ink-soft)}
+  .gear:hover{background:rgba(28,42,58,.05)}
+  .cfg-note{background:rgba(232,176,75,.14);border:1px solid rgba(232,176,75,.4);border-radius:14px;padding:14px 18px;font-size:14px;color:#8a651b;margin-bottom:26px}
+  .cfg-card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:26px;margin-bottom:22px;box-shadow:var(--shadow-s)}
+  .cfg-card>h3{font-size:1.35rem;margin-bottom:6px}
+  .cfg-card>.sub{color:var(--ink-soft);font-size:14px;margin-bottom:20px}
+  .pal-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:14px}
+  .pal{border:2px solid var(--line);border-radius:16px;padding:12px;cursor:pointer;text-align:center;transition:.15s;background:var(--card)}
+  .pal:hover{transform:translateY(-2px)}
+  .pal.active{border-color:var(--terra);box-shadow:0 0 0 3px rgba(224,122,95,.18)}
+  .pal .sw{display:flex;gap:4px;justify-content:center;margin-bottom:8px}
+  .pal .sw span{width:20px;height:20px;border-radius:6px}
+  .pal .nm{font-size:13px;font-weight:600}
+  .form-row{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px}
+  .form-row.full{grid-template-columns:1fr}
+  .form-label{font-size:13px;font-weight:600;color:var(--ink-soft);display:block;margin-bottom:6px}
+  .form-input,.form-area,.form-sel{width:100%;padding:11px 14px;border:1px solid var(--line);border-radius:12px;background:var(--cream);font-family:var(--sans);font-size:14.5px;color:var(--ink)}
+  .form-area{min-height:78px;resize:vertical}
+  .cfg-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:8px}
+  .lock-banner{display:flex;align-items:center;gap:12px;background:rgba(126,142,91,.14);border:1px solid rgba(126,142,91,.4);border-radius:14px;padding:14px 18px;color:var(--sage-d);font-size:14px;font-weight:500}
+  .lock-banner svg{width:20px;height:20px;flex:none}
+  .locked{opacity:.5;pointer-events:none}
+  .mini-link{font-size:12.5px;color:var(--ink-soft);cursor:pointer;text-decoration:underline;background:none;border:none;margin-top:6px}
+  /* community feed */
+  .composer{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:20px;box-shadow:var(--shadow-s);margin-top:26px;max-width:600px;margin-left:auto;margin-right:auto}
+  .composer-top{display:flex;gap:12px}
+  .composer .pfp{width:44px;height:44px;border-radius:50%;flex:none;background:#5AA6A6}
+  .composer textarea{flex:1;border:none;outline:none;resize:none;font-family:var(--sans);font-size:15px;background:transparent;min-height:52px;color:var(--ink)}
+  .composer-bar{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:12px;padding-top:12px;border-top:1px solid var(--line);flex-wrap:wrap}
+  .emoji-pick{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+  .emoji-pick button{width:34px;height:34px;border-radius:9px;border:1px solid var(--line);background:var(--cream);cursor:pointer;font-size:17px}
+  .emoji-pick button.on{border-color:var(--terra);background:rgba(224,122,95,.14)}
+  .feed{display:flex;flex-direction:column;gap:20px;margin-top:24px;max-width:600px;margin-left:auto;margin-right:auto}
+  .post-card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow-s)}
+  .post-head{display:flex;align-items:center;gap:12px;padding:16px}
+  .post-head .pfp{width:42px;height:42px;border-radius:50%;flex:none}
+  .post-head .pn{font-weight:600;font-size:14.5px}
+  .post-head .pt{font-size:12.5px;color:var(--ink-soft)}
+  .post-img{aspect-ratio:1;display:flex;align-items:center;justify-content:center;font-size:96px}
+  .post-actions{display:flex;gap:20px;padding:10px 16px 4px}
+  .post-actions button{display:flex;align-items:center;gap:7px;background:none;border:none;cursor:pointer;color:var(--ink-soft);font-size:14px;font-weight:600;padding:4px 0}
+  .post-actions button.liked{color:var(--terra)}
+  .post-actions svg{width:22px;height:22px}
+  .post-cap{padding:2px 16px 12px;font-size:14.5px;line-height:1.5}
+  .post-cap b{font-weight:600}
+  .cmt-list{padding:0 16px 8px;display:flex;flex-direction:column;gap:5px}
+  .cmt{font-size:13.5px;color:var(--ink-soft)}.cmt b{font-weight:600;color:var(--ink)}
+  .cmt-box{border-top:1px solid var(--line);padding:12px 16px;display:flex;gap:8px}
+  .cmt-box input{flex:1;border:1px solid var(--line);border-radius:99px;padding:8px 14px;font-size:13.5px;background:var(--cream);outline:none;color:var(--ink)}
+  /* palette-aware tints (override earlier defs) */
+  .bg-terra{background:color-mix(in srgb,var(--terra) 14%,transparent);color:var(--terra-d)}
+  .bg-sage{background:color-mix(in srgb,var(--sage) 16%,transparent);color:var(--sage-d)}
+  .bg-mustard{background:color-mix(in srgb,var(--mustard) 18%,transparent);color:color-mix(in srgb,var(--mustard) 65%,#000)}
+  .bg-navy{background:color-mix(in srgb,var(--navy) 9%,transparent);color:var(--navy)}
+  .t-terra{background:color-mix(in srgb,var(--terra) 14%,transparent);color:var(--terra-d)}
+  .t-sage{background:color-mix(in srgb,var(--sage) 16%,transparent);color:var(--sage-d)}
+  .t-mustard{background:color-mix(in srgb,var(--mustard) 20%,transparent);color:color-mix(in srgb,var(--mustard) 65%,#000)}
+  .t-navy{background:color-mix(in srgb,var(--navy) 9%,transparent);color:var(--navy)}
+  .nav a.nav-active{color:var(--terra-d);background:color-mix(in srgb,var(--terra) 14%,transparent)}
+  .prof-pill:hover{border-color:var(--terra);color:var(--terra-d)}
+
+  /* config page */
+  .cfg-wrap{max-width:920px}
+  .cfg-card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:26px;margin-bottom:22px;box-shadow:var(--shadow-s)}
+  .cfg-card h3{font-size:1.3rem;margin-bottom:3px}
+  .cfg-card .sub{color:var(--ink-soft);font-size:14px;margin-bottom:18px}
+  .pal-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:12px}
+  .pal{border:2px solid var(--line);background:var(--card);border-radius:var(--radius-s);padding:14px 10px;cursor:pointer;display:flex;flex-direction:column;gap:10px;align-items:center;transition:.18s;font-family:var(--sans)}
+  .pal:hover{border-color:var(--sage)}
+  .pal.pal-active{border-color:var(--terra);box-shadow:0 0 0 3px color-mix(in srgb,var(--terra) 22%,transparent)}
+  .pal-dots{display:flex}
+  .pal-dots i{width:22px;height:22px;border-radius:50%;margin-left:-7px;border:2px solid var(--card)}
+  .pal-dots i:first-child{margin-left:0}
+  .pal-name{font-size:13px;font-weight:600;color:var(--ink)}
+  .adm-row{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:13px 0;border-bottom:1px solid var(--line)}
+  .adm-row:last-child{border-bottom:none}
+  .adm-row b{font-size:15px}
+  .adm-meta{color:var(--ink-soft);font-size:13px;margin-left:10px}
+  .cfg-form{display:none;border-top:1px dashed var(--line);margin-top:16px;padding-top:18px;gap:12px}
+  .cfg-form.open{display:grid}
+  .cfg-form label{font-size:12.5px;font-weight:600;display:block;margin-bottom:5px;color:var(--ink-soft)}
+  .cfg-form input,.cfg-form textarea,.cfg-form select{width:100%;padding:10px 12px;border:1px solid var(--line);border-radius:10px;font-family:var(--sans);font-size:14px;background:var(--cream);color:var(--ink)}
+  .cfg-form textarea{min-height:66px;resize:vertical}
+  .cfg-note{background:color-mix(in srgb,var(--mustard) 16%,transparent);border:1px solid color-mix(in srgb,var(--mustard) 40%,transparent);border-radius:var(--radius-s);padding:14px;font-size:13.5px;color:color-mix(in srgb,var(--mustard) 60%,#000)}
+  .lock-bar{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+  .config.locked .lock-hide{display:none}
+  .config.locked .lock-hide-card{display:none}
+  .q-preview{padding:11px 0;border-bottom:1px solid var(--line);font-size:14.5px}
+  .q-preview:last-child{border:none}
+  .q-preview .qi{color:var(--terra-d);font-weight:600;margin-right:6px}
+
+  /* community feed */
+  .composer{max-width:520px;margin:26px auto 0;background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:18px;box-shadow:var(--shadow-s)}
+  .composer-top{display:flex;gap:12px;align-items:flex-start}
+  .comp-av,.pc-av{border-radius:50%;overflow:hidden;position:relative;flex:none}
+  .comp-av{width:44px;height:44px;background:var(--terra)}
+  .comp-av .ch,.pc-av .ch{position:absolute;left:50%;bottom:-32%;transform:translateX(-50%);width:132%;height:auto}
+  .composer textarea{flex:1;border:none;outline:none;resize:none;font-family:var(--sans);font-size:15px;background:transparent;min-height:46px;color:var(--ink);padding-top:8px}
+  .comp-img{height:150px;border-radius:14px;margin-top:12px;display:none}
+  .comp-img.show{display:block}
+  .comp-bar{display:flex;justify-content:space-between;align-items:center;margin-top:12px;border-top:1px solid var(--line);padding-top:14px}
+  .feed{max-width:520px;margin:22px auto 0;display:flex;flex-direction:column;gap:20px}
+  .post-card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow-s)}
+  .pc-head{display:flex;align-items:center;gap:11px;padding:14px 16px}
+  .pc-av{width:42px;height:42px}
+  .pc-name{font-weight:600;font-size:14.5px}
+  .pc-time{font-size:12.5px;color:var(--ink-soft)}
+  .pc-img{height:300px}
+  .pc-actions{display:flex;gap:20px;padding:12px 16px 2px}
+  .pc-btn{display:flex;align-items:center;gap:6px;background:none;border:none;cursor:pointer;font-size:14px;font-weight:600;color:var(--ink);padding:0}
+  .pc-btn svg{width:23px;height:23px}
+  .pc-btn.liked{color:var(--terra)}
+  .pc-cap{padding:6px 16px 16px;font-size:14.5px;line-height:1.5}
+  .pc-cap b{margin-right:5px}
+  .commit-bar{display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;background:var(--card);border:1px solid var(--line);border-radius:var(--radius-s);padding:14px 18px;font-size:14.5px;font-weight:600;box-shadow:var(--shadow-s)}
+  .commit-bar.mine{background:color-mix(in srgb,var(--sage) 16%,transparent);border-color:color-mix(in srgb,var(--sage) 42%,transparent);color:var(--sage-d);justify-content:center}
+  .commit-bar.locked{background:color-mix(in srgb,var(--terra) 12%,transparent);border-color:color-mix(in srgb,var(--terra) 34%,transparent);color:var(--terra-d);font-weight:500;justify-content:center;text-align:center}
+  .commit-bar.hint{justify-content:center;font-weight:500;color:var(--ink-soft)}
+  .commit-bar a[data-go]{color:var(--terra-d);cursor:pointer;text-decoration:underline}
+  .user-chip{display:flex;align-items:center;gap:8px}
+  .user-chip .uc-name{font-weight:600;font-size:13.5px;color:var(--ink)}
+  .role-badge{font-size:10.5px;font-weight:700;padding:3px 8px;border-radius:20px;text-transform:uppercase;letter-spacing:.3px;color:#fff}
+  .role-badge.role-usuario{background:var(--sage)}
+  .role-badge.role-arp{background:var(--mustard);color:#5a4310}
+  .role-badge.role-dono{background:var(--terra)}
+  .uc-out{background:none;border:1px solid var(--line);border-radius:20px;padding:4px 12px;font-size:12.5px;font-weight:600;cursor:pointer;color:var(--ink-soft);font-family:var(--sans)}
+  .uc-out:hover{color:var(--ink);border-color:var(--ink-soft)}
+  .auth-msg{font-size:13px;margin-top:8px;min-height:1px}
+  .auth-msg.err{color:#c0392b}
+  .auth-switch{font-size:13.5px;color:var(--ink-soft);margin-top:12px;text-align:center}
+  .auth-switch a{color:var(--terra-d);font-weight:600;cursor:pointer;text-decoration:underline}
+  .demo-box{margin-top:18px;border-top:1px dashed var(--line);padding-top:16px}
+  .demo-title{font-size:12px;font-weight:700;letter-spacing:.4px;text-transform:uppercase;color:var(--ink-soft);margin-bottom:10px;text-align:center}
+  .demo-btns{display:flex;gap:8px;justify-content:center;flex-wrap:wrap}
+  .chip.demo{cursor:pointer;border:1px solid var(--line);background:var(--cream);font-family:var(--sans)}
+  .chip.demo:hover{border-color:var(--terra);color:var(--terra-d)}
+  .demo-note{font-size:12px;color:var(--ink-soft);margin-top:12px;text-align:center;line-height:1.6}
+  .comp-lock{max-width:520px;margin:26px auto 0;background:var(--card);border:1px dashed var(--line);border-radius:var(--radius);padding:18px 20px;display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;font-size:14px;color:var(--ink-soft);font-weight:500}
+  @media(max-width:640px){.pal-grid{grid-template-columns:repeat(2,1fr)}}
+</style>
+</head>
+<body>
+<!-- character set (original flat mascots) -->
+<svg width="0" height="0" style="position:absolute;pointer-events:none" aria-hidden="true"><defs>
+  <symbol id="c-girl" viewBox="0 0 140 178">
+    <rect x="37" y="42" width="66" height="90" rx="33" fill="#C9654B"/>
+    <path d="M40 122 Q40 106 70 106 Q100 106 100 122 L104 176 Q104 178 100 178 L40 178 Q36 178 36 176 Z" fill="#7E8E5B"/>
+    <path d="M96 122 q20 -3 24 -26" stroke="#7E8E5B" stroke-width="13" fill="none" stroke-linecap="round"/>
+    <circle cx="122" cy="88" r="9" fill="#F0C9A8"/>
+    <circle cx="70" cy="56" r="33" fill="#C9654B"/>
+    <circle cx="70" cy="62" r="30" fill="#F0C9A8"/>
+    <circle cx="61" cy="63" r="3.1" fill="#2B2A26"/><circle cx="79" cy="63" r="3.1" fill="#2B2A26"/>
+    <circle cx="55" cy="71" r="4" fill="#E88A6F" opacity=".5"/><circle cx="85" cy="71" r="4" fill="#E88A6F" opacity=".5"/>
+    <path d="M63 72 Q70 79 77 72" stroke="#2B2A26" stroke-width="2.3" fill="none" stroke-linecap="round"/>
+  </symbol>
+  <symbol id="c-cap" viewBox="0 0 140 178">
+    <path d="M40 122 Q40 106 70 106 Q100 106 100 122 L104 176 Q104 178 100 178 L40 178 Q36 178 36 176 Z" fill="#E07A5F"/>
+    <path d="M97 126 q17 3 20 -13" stroke="#E07A5F" stroke-width="13" fill="none" stroke-linecap="round"/>
+    <circle cx="118" cy="110" r="9" fill="#D99B6C"/>
+    <rect x="115" y="95" width="6" height="15" rx="3" fill="#D99B6C"/>
+    <circle cx="70" cy="62" r="30" fill="#D99B6C"/>
+    <path d="M38 54 Q40 22 70 22 Q100 22 102 54 Q86 46 70 46 Q54 46 38 54 Z" fill="#67754A"/>
+    <path d="M100 51 Q121 49 123 60 Q111 55 100 56 Z" fill="#556140"/>
+    <circle cx="70" cy="24" r="3" fill="#556140"/>
+    <circle cx="61" cy="64" r="3.1" fill="#2B2A26"/><circle cx="79" cy="64" r="3.1" fill="#2B2A26"/>
+    <circle cx="55" cy="72" r="4" fill="#C9654B" opacity=".4"/><circle cx="85" cy="72" r="4" fill="#C9654B" opacity=".4"/>
+    <path d="M62 73 Q70 80 78 73" stroke="#2B2A26" stroke-width="2.3" fill="none" stroke-linecap="round"/>
+  </symbol>
+  <symbol id="c-curly" viewBox="0 0 140 178">
+    <path d="M40 122 Q40 106 70 106 Q100 106 100 122 L104 176 Q104 178 100 178 L40 178 Q36 178 36 176 Z" fill="#E8B04B"/>
+    <g fill="#3A2A20"><circle cx="46" cy="54" r="15"/><circle cx="94" cy="54" r="15"/><circle cx="57" cy="40" r="15"/><circle cx="83" cy="40" r="15"/><circle cx="70" cy="35" r="16"/><circle cx="41" cy="66" r="11"/><circle cx="99" cy="66" r="11"/></g>
+    <circle cx="70" cy="63" r="28" fill="#8A5A3C"/>
+    <circle cx="61" cy="64" r="3.1" fill="#20140D"/><circle cx="79" cy="64" r="3.1" fill="#20140D"/>
+    <circle cx="55" cy="72" r="4" fill="#5E3A24" opacity=".5"/><circle cx="85" cy="72" r="4" fill="#5E3A24" opacity=".5"/>
+    <path d="M63 73 Q70 80 77 73" stroke="#20140D" stroke-width="2.3" fill="none" stroke-linecap="round"/>
+  </symbol>
+  <symbol id="c-glasses" viewBox="0 0 140 178">
+    <path d="M40 122 Q40 106 70 106 Q100 106 100 122 L104 176 Q104 178 100 178 L40 178 Q36 178 36 176 Z" fill="#1C2A3A"/>
+    <circle cx="70" cy="56" r="32" fill="#3A2A20"/>
+    <circle cx="70" cy="63" r="30" fill="#B67B4E"/>
+    <circle cx="60" cy="64" r="8" fill="#FBF3E7" stroke="#2B2A26" stroke-width="2.4"/>
+    <circle cx="80" cy="64" r="8" fill="#FBF3E7" stroke="#2B2A26" stroke-width="2.4"/>
+    <path d="M68 64 h4" stroke="#2B2A26" stroke-width="2.4"/>
+    <circle cx="60" cy="64" r="2.6" fill="#2B2A26"/><circle cx="80" cy="64" r="2.6" fill="#2B2A26"/>
+    <circle cx="52" cy="72" r="4" fill="#8A5A34" opacity=".4"/><circle cx="88" cy="72" r="4" fill="#8A5A34" opacity=".4"/>
+    <path d="M63 74 Q70 80 77 74" stroke="#2B2A26" stroke-width="2.3" fill="none" stroke-linecap="round"/>
+  </symbol>
+</defs></svg>
+
+<!-- ============ HEADER ============ -->
+<header class="topbar">
+  <div class="wrap row">
+    <div class="brand" data-go="home">
+      <svg class="mark" viewBox="0 0 32 32" fill="none" aria-hidden="true">
+        <circle cx="16" cy="16" r="14.5" stroke="#E07A5F" stroke-width="2"/>
+        <path d="M16 5 L19.5 16 L16 27 L12.5 16 Z" fill="#E07A5F"/>
+        <path d="M5 16 L16 12.5 L27 16 L16 19.5 Z" fill="#1C2A3A"/>
+        <circle cx="16" cy="16" r="2.4" fill="#F7F0E6"/>
+      </svg>
+      Norteens
+    </div>
+    <nav class="nav" id="nav">
+      <a data-go="home" data-nav="home">Início</a>
+      <a data-go="explorar" data-nav="explorar">Profissões</a>
+      <a data-go="famosos" data-nav="famosos">Famosos</a>
+      <a data-go="conteudos" data-nav="conteudos">Conteúdos</a>
+      <a data-go="oportunidades" data-nav="oportunidades">Oportunidades</a>
+      <a data-go="comunidade" data-nav="comunidade">Comunidade</a>
+      <a data-go="noticias" data-nav="noticias">Notícias</a>
+    </nav>
+    <div class="actions">
+      <a class="btn btn-ghost btn-sm" data-go="config" id="gearBtn" style="display:none" aria-label="Configurações" title="Configurações"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="12" cy="12" r="3"/><path d="M19.4 13a1.7 1.7 0 00.3 1.9l.1.1a2 2 0 11-2.8 2.8l-.1-.1a1.7 1.7 0 00-2.9 1.2V21a2 2 0 01-4 0v-.1A1.7 1.7 0 006 19.4l-.1.1a2 2 0 11-2.8-2.8l.1-.1A1.7 1.7 0 003.6 13H3a2 2 0 010-4h.1A1.7 1.7 0 004.6 6l-.1-.1A2 2 0 117.3 3.1l.1.1a1.7 1.7 0 001.9.3H9.4A1.7 1.7 0 0010.6 2H11a2 2 0 014 0v.1A1.7 1.7 0 0018 4.6l.1-.1a2 2 0 112.8 2.8l-.1.1a1.7 1.7 0 00-.3 1.9V9.4A1.7 1.7 0 0022 10.6V11a2 2 0 010 4h-.1a1.7 1.7 0 00-1.5 1z"/></svg></a>
+      <a class="btn btn-ghost btn-sm" data-go="login" id="loginBtn">Entrar</a>
+      <div id="userChip" class="user-chip" style="display:none"></div>
+      <a class="btn btn-primary btn-sm" data-go="teste" id="ctaTesteTopo">Fazer teste</a>
+      <a class="gear" data-go="config" title="Configurações" aria-label="Configurações"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.6 1.6 0 00.3 1.8l.1.1a2 2 0 11-2.8 2.8l-.1-.1a1.6 1.6 0 00-1.8-.3 1.6 1.6 0 00-1 1.5V21a2 2 0 01-4 0v-.1a1.6 1.6 0 00-1-1.5 1.6 1.6 0 00-1.8.3l-.1.1a2 2 0 11-2.8-2.8l.1-.1a1.6 1.6 0 00.3-1.8 1.6 1.6 0 00-1.5-1H3a2 2 0 010-4h.1a1.6 1.6 0 001.5-1 1.6 1.6 0 00-.3-1.8l-.1-.1a2 2 0 112.8-2.8l.1.1a1.6 1.6 0 001.8.3h.1a1.6 1.6 0 001-1.5V3a2 2 0 014 0v.1a1.6 1.6 0 001 1.5 1.6 1.6 0 001.8-.3l.1-.1a2 2 0 112.8 2.8l-.1.1a1.6 1.6 0 00-.3 1.8v.1a1.6 1.6 0 001.5 1H21a2 2 0 010 4h-.1a1.6 1.6 0 00-1.5 1z"/></svg></a>
+      <button class="menu-toggle" id="mtoggle" aria-label="Menu">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+      </button>
+    </div>
+  </div>
+</header>
+
+<main>
+
+<!-- ============ HOME ============ -->
+<section class="page active" id="home">
+  <div class="wrap hero">
+    <div class="hero-grid">
+      <div>
+        <span class="eyebrow">Orientação de carreira com propósito</span>
+        <h1 style="margin-top:16px">Descubra seu caminho.<br><span class="serif-i">Construa seu futuro</span> com propósito.</h1>
+        <p class="lead">Testes, conteúdos e ferramentas para você se conhecer e encontrar a profissão que combina com quem você é — sem medo e sem estar sozinho.</p>
+        <div class="hero-cta">
+          <a class="btn btn-primary" data-go="teste">Fazer teste gratuito
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+          <a class="btn btn-ghost" data-go="explorar">Explorar profissões</a>
+        </div>
+        <div class="hero-tag">
+          <div class="avatars">
+            <span style="background:#E07A5F"></span><span style="background:#7E8E5B"></span>
+            <span style="background:#E8B04B"></span><span style="background:#1C2A3A"></span>
+          </div>
+          +1,2 mil jovens já começaram a se encontrar aqui
+        </div>
+      </div>
+      <div>
+        <svg viewBox="0 0 480 440" class="hero-art" aria-hidden="true">
+          <circle cx="384" cy="118" r="116" fill="#7E8E5B" opacity=".16"/>
+          <circle cx="104" cy="316" r="96" fill="#E07A5F" opacity=".13"/>
+          <ellipse cx="240" cy="402" rx="166" ry="20" fill="#1C2A3A" opacity=".06"/>
+          <path d="M60 300 C 150 300, 150 200, 250 200 S 430 150, 430 96" fill="none" stroke="#1C2A3A" stroke-opacity=".2" stroke-width="3" stroke-dasharray="1.5 13" stroke-linecap="round"/>
+          <use href="#c-cap" x="230" y="188" width="176" height="224"/>
+          <use href="#c-girl" x="86" y="174" width="184" height="234"/>
+          <g transform="translate(332 66)">
+            <circle cx="0" cy="0" r="26" fill="#FFFDF8" stroke="rgba(28,42,58,.1)"/>
+            <path d="M0 -15 L4 0 L0 15 L-4 0 Z" fill="#E07A5F"/>
+            <path d="M-15 0 L0 -4 L15 0 L0 4 Z" fill="#1C2A3A"/>
+          </g>
+          <circle cx="66" cy="120" r="6" fill="#E8B04B"/>
+          <circle cx="412" cy="292" r="7" fill="#E07A5F"/>
+          <rect x="50" y="212" width="13" height="13" rx="3.5" fill="#7E8E5B" transform="rotate(20 56 218)"/>
+          <circle cx="300" cy="58" r="5" fill="#7E8E5B"/>
+          <path d="M394 92 h10 M399 87 v10" stroke="#E07A5F" stroke-width="3" stroke-linecap="round"/>
+          <circle cx="150" cy="66" r="4" fill="#E8B04B"/>
+        </svg>
+      </div>
+    </div>
+  </div>
+
+  <!-- steps -->
+  <div class="section">
+    <div class="wrap">
+      <div class="steps-head">
+        <span class="eyebrow">Como funciona</span>
+        <h2 style="font-size:2.1rem;margin-top:10px">Sua jornada em <span class="serif-i">3 passos</span></h2>
+      </div>
+      <div class="steps">
+        <div class="step">
+          <span class="n">Passo 1</span>
+          <div class="ic bg-sage"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/></svg></div>
+          <h3>Se conheça</h3>
+          <p>Responda o teste comportamental e entenda seu perfil, suas forças e o que te move de verdade.</p>
+        </div>
+        <div class="step">
+          <span class="n">Passo 2</span>
+          <div class="ic bg-terra"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4-4"/></svg></div>
+          <h3>Explore possibilidades</h3>
+          <p>Descubra profissões que combinam com você, com dados reais de rotina, mercado e salário.</p>
+        </div>
+        <div class="step">
+          <span class="n">Passo 3</span>
+          <div class="ic bg-mustard"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M5 3v18l7-4 7 4V3z"/></svg></div>
+          <h3>Tome decisões</h3>
+          <p>Monte seu plano, aproveite oportunidades e conte com mentoria para seguir com clareza.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- features -->
+  <div class="section band-2">
+    <div class="wrap">
+      <div class="steps-head">
+        <h2 style="font-size:2rem">Tudo que você precisa <span class="serif-i">para decidir melhor</span></h2>
+      </div>
+      <div class="features">
+        <div class="feature">
+          <div class="ic bg-terra" style="display:flex;align-items:center;justify-content:center"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M9 11l3 3 8-8"/><path d="M21 12a9 9 0 11-6.2-8.5"/></svg></div>
+          <h4>Teste de personalidade</h4>
+          <p>Um retrato claro de quem você é e de como você decide.</p>
+        </div>
+        <div class="feature">
+          <div class="ic bg-sage" style="display:flex;align-items:center;justify-content:center"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M12 3l9 4-9 4-9-4z"/><path d="M3 12l9 4 9-4"/></svg></div>
+          <h4>Guia vocacional</h4>
+          <p>Fichas honestas de cada profissão, com rotina e realidade.</p>
+        </div>
+        <div class="feature">
+          <div class="ic bg-mustard" style="display:flex;align-items:center;justify-content:center"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M3 3v18h18"/><path d="M7 15l4-4 3 3 5-6"/></svg></div>
+          <h4>Plano de carreira</h4>
+          <p>Próximos passos concretos, no seu tempo e no seu ritmo.</p>
+        </div>
+        <div class="feature">
+          <div class="ic bg-navy" style="display:flex;align-items:center;justify-content:center"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg></div>
+          <h4>Mentoria e consultoria</h4>
+          <p>Um ARP ao seu lado para cuidar do lado emocional da escolha.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- quote -->
+  <div class="section">
+    <div class="wrap">
+      <div class="quote">
+        <div class="dots">
+          <span style="width:8px;height:8px;background:#E8B04B;top:40px;left:60px"></span>
+          <span style="width:10px;height:10px;background:#E07A5F;bottom:50px;right:70px"></span>
+          <span style="width:6px;height:6px;background:#7E8E5B;top:70px;right:120px"></span>
+          <span style="width:7px;height:7px;background:#7E8E5B;bottom:80px;left:120px"></span>
+        </div>
+        <div class="orbit"><svg class="ch" viewBox="0 0 140 178"><use href="#c-girl" width="140" height="178"/></svg></div>
+        <blockquote>“A Norteens me ajudou a reconhecer minhas forças e sair da zona de conforto. Hoje sigo um caminho que faz sentido pra mim.”</blockquote>
+        <div class="who"><b>Amber Augusto</b>17 anos · 3º ano do Ensino Médio</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- cta -->
+  <div class="section" style="padding-top:0">
+    <div class="wrap">
+      <div class="ctaband">
+        <div>
+          <h2>Pronto para dar o primeiro passo?</h2>
+          <p>Comece pelo teste gratuito. Leva poucos minutos e já entrega clareza.</p>
+        </div>
+        <a class="btn btn-light" data-go="teste">Fazer teste gratuito
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ LOGIN ============ -->
+<section class="page" id="login">
+  <div class="auth">
+    <div class="auth-left">
+      <div class="tile" style="background:var(--terra)"><svg class="ch" viewBox="0 0 140 178"><use href="#c-girl" width="140" height="178"/></svg></div>
+      <div class="tile" style="background:var(--sage)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 20V10l8-6 8 6v10M9 20v-6h6v6"/></svg></div>
+      <div class="tile" style="background:var(--navy)"><svg class="ch" viewBox="0 0 140 178"><use href="#c-glasses" width="140" height="178"/></svg></div>
+      <div class="tile" style="background:var(--mustard)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 3a5 5 0 015 5c0 2-1 3-1 3H8s-1-1-1-3a5 5 0 015-5z"/><path d="M9 16h6M10 20h4"/></svg></div>
+      <div class="tile" style="background:var(--navy-2)"><svg class="ch" viewBox="0 0 140 178"><use href="#c-cap" width="140" height="178"/></svg></div>
+      <div class="tile" style="background:var(--terra-d)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 3a9 9 0 000 18c1 0 1.5-.8 1.5-1.5 0-1 .8-1.5 1.5-1.5H17A3 3 0 0021 15c0-5-4-12-9-12z"/><circle cx="7.5" cy="11" r="1"/><circle cx="12" cy="7.5" r="1"/><circle cx="16" cy="10.5" r="1"/></svg></div>
+      <div class="tile" style="background:var(--sage-d)"><svg class="ch" viewBox="0 0 140 178"><use href="#c-curly" width="140" height="178"/></svg></div>
+      <div class="tile" style="background:var(--terra)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 5h16v12H4z"/><path d="M9 21h6M12 17v4"/></svg></div>
+    </div>
+    <div class="auth-right">
+      <div class="brand" style="justify-content:center">
+        <svg class="mark" viewBox="0 0 32 32" fill="none" aria-hidden="true"><circle cx="16" cy="16" r="14.5" stroke="#E07A5F" stroke-width="2"/><path d="M16 5 L19.5 16 L16 27 L12.5 16 Z" fill="#E07A5F"/><path d="M5 16 L16 12.5 L27 16 L16 19.5 Z" fill="#1C2A3A"/><circle cx="16" cy="16" r="2.4" fill="#F7F0E6"/></svg>
+        Norteens
+      </div>
+      <h2>Que bom te ver por aqui</h2>
+      <p class="lead" style="font-size:15px">Entre para começar sua jornada de autoconhecimento e carreira.</p>
+      <div class="auth-card">
+        <div id="loginMode">
+          <input class="field" id="loginEmail" type="email" placeholder="Seu e-mail">
+          <input class="field" id="loginSenha" type="password" placeholder="Sua senha">
+          <button class="btn btn-primary" id="doLogin" style="justify-content:center;width:100%">Entrar</button>
+          <div class="auth-msg" id="authMsg"></div>
+          <p class="auth-switch">Não tem conta? <a id="toSignup">Criar conta</a></p>
+        </div>
+        <div id="signupMode" style="display:none">
+          <input class="field" id="suNome" placeholder="Seu nome">
+          <input class="field" id="suEmail" type="email" placeholder="Seu e-mail">
+          <input class="field" id="suSenha" type="password" placeholder="Crie uma senha">
+          <button class="btn btn-primary" id="doSignup" style="justify-content:center;width:100%">Criar conta</button>
+          <div class="auth-msg" id="authMsg2"></div>
+          <p class="auth-switch">Já tem conta? <a id="toLogin">Entrar</a></p>
+        </div>
+        <div class="demo-box">
+          <div class="demo-title">Contas de demonstração</div>
+          <div class="demo-btns">
+            <button class="chip demo" data-demo="usuario">Usuária</button>
+            <button class="chip demo" data-demo="arp">ARP · Tecnologia</button>
+            <button class="chip demo" data-demo="dono">Dona (você)</button>
+          </div>
+          <p class="demo-note">Navegar sem entrar = <b>visitante</b> (acesso limitado).<br>No login por e-mail, todas as contas de exemplo usam a senha <b>123</b>.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ WELCOME ============ -->
+<section class="page" id="welcome">
+  <div class="welcome">
+    <div class="dots" style="position:absolute;inset:0">
+      <span style="position:absolute;width:10px;height:10px;border-radius:50%;background:#E8B04B;top:22%;left:18%"></span>
+      <span style="position:absolute;width:14px;height:14px;border-radius:50%;background:#E07A5F;bottom:24%;right:20%"></span>
+      <span style="position:absolute;width:8px;height:8px;border-radius:50%;background:#7E8E5B;top:30%;right:26%"></span>
+      <span style="position:absolute;width:9px;height:9px;border-radius:4px;background:#7E8E5B;bottom:30%;left:24%;transform:rotate(20deg)"></span>
+    </div>
+    <div class="welcome-in">
+      <svg class="welcome-char" viewBox="0 0 140 178" aria-hidden="true"><use href="#c-girl" width="140" height="178"/></svg>
+      <span class="eyebrow" style="display:block;margin-top:14px">Bem-vindo(a)</span>
+      <h2>Olá, <span id="uname" class="u">Usuário</span> 👋</h2>
+      <p class="lead" style="margin:10px auto 0">Como podemos te chamar? Escreva seu nome para começar.</p>
+      <input id="nameInput" class="name-field" placeholder="seu nome" oninput="document.getElementById('uname').textContent=this.value.trim()||'Usuário'" aria-label="Seu nome">
+      <div><a class="btn btn-primary" style="margin-top:22px" data-go="teste">Fazer meu teste
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ TESTE ============ -->
+<section class="page" id="teste">
+  <div class="section">
+    <div class="wrap">
+      <div class="page-hero">
+        <span class="eyebrow">Teste comportamental</span>
+        <h2>Como você <span class="serif-i">reage</span> no dia a dia?</h2>
+        <p>Arraste cada barra para o ponto que mais combina com você. Não existe resposta certa.</p>
+      </div>
+      <div class="quiz" style="margin-top:34px">
+        <div id="testeBody"></div>
+        <div class="center" style="margin-top:6px" id="testeSubmit">
+          <a class="btn btn-dark" data-go="resultado">Ver meu resultado
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ RESULTADO ============ -->
+<section class="page" id="resultado">
+  <div class="section">
+    <div class="wrap">
+      <div class="res-head">
+        <div class="res-badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M12 2l2.4 7.4H22l-6 4.5 2.3 7.1L12 16.6 5.7 21l2.3-7.1-6-4.5h7.6z"/></svg></div>
+        <span class="eyebrow">Seu perfil comportamental</span>
+        <h2 style="font-size:2.2rem;margin-top:8px">Conformidade</h2>
+        <p class="lead" style="margin:8px auto 0">Você é analítico, preciso e sistemático. Processa informações com profundidade, evita erros por meio de planejamento e constrói soluções sólidas e confiáveis.</p>
+      </div>
+      <div class="res-main">
+        <div class="bars">
+          <div class="bar"><span class="lb">Dominância</span><div class="track"><div class="fill" style="width:38%;background:#E07A5F"></div></div><span class="pc">38%</span></div>
+          <div class="bar"><span class="lb">Influência</span><div class="track"><div class="fill" style="width:31%;background:#E8B04B"></div></div><span class="pc">31%</span></div>
+          <div class="bar"><span class="lb">Estabilidade</span><div class="track"><div class="fill" style="width:54%;background:#7E8E5B"></div></div><span class="pc">54%</span></div>
+          <div class="bar"><span class="lb">Conformidade</span><div class="track"><div class="fill" style="width:78%;background:#1C2A3A"></div></div><span class="pc">78%</span></div>
+        </div>
+        <div class="res-cols">
+          <div class="rc">
+            <h4><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M13 2L3 14h7l-1 8 10-12h-7z"/></svg>Habilidades naturais</h4>
+            <ul><li>Pensamento analítico e atenção ao detalhe</li><li>Organização e método</li><li>Rigor técnico e qualidade</li></ul>
+          </div>
+          <div class="rc">
+            <h4><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M3 21h18M5 21V7l7-4 7 4v14"/></svg>Ambiente ideal</h4>
+            <p>Ambientes estruturados, com processos claros, autonomia técnica e foco em entregar qualidade acima da velocidade.</p>
+          </div>
+          <div class="rc">
+            <h4><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16h.01"/></svg>Pontos de atenção</h4>
+            <p>Cuidado com o perfeccionismo: nem sempre a solução perfeita chega no tempo certo. Confiar mais no time também é uma força.</p>
+          </div>
+          <div class="rc">
+            <h4><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M12 3l9 4-9 4-9-4z"/><path d="M3 12l9 4 9-4"/></svg>Como você decide</h4>
+            <p>Com dados, análise e pé no chão. Decisões seguras, bem fundamentadas e pensadas para durar.</p>
+          </div>
+        </div>
+        <p style="margin-top:22px;font-weight:600;font-size:15px">Profissões compatíveis com o seu perfil</p>
+        <div class="prof-list">
+          <div class="prof-pill" data-prof="eng-computacao"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M8 9l-3 3 3 3M16 9l3 3-3 3"/></svg>Engenharia de Computação</div>
+          <div class="prof-pill" data-prof="medicina"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M12 21S4 14 4 9a4 4 0 018-1 4 4 0 018 1c0 5-8 12-8 12z"/></svg>Medicina</div>
+          <div class="prof-pill" data-prof="design"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M14 4l6 6-9 9H5v-6z"/></svg>Design</div>
+          <div class="prof-pill" data-prof="direito"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M5 4h12a2 2 0 012 2v13H7a2 2 0 01-2-2z"/></svg>Direito</div>
+          <div class="prof-pill" data-prof="psicologia"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M9 5a3 3 0 016 0 3 3 0 012 5 3 3 0 01-2 5 3 3 0 01-6 0 3 3 0 01-2-5 3 3 0 012-5z"/></svg>Psicologia</div>
+          <div class="prof-pill" data-go="explorar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M12 5v14M5 12h14"/></svg>Ver mais áreas</div>
+        </div>
+        <div class="center" style="margin-top:26px">
+          <a class="btn btn-primary" data-go="explorar">Entrar na Norteens
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ EXPLORAR ============ -->
+<section class="page" id="explorar">
+  <div class="explore">
+    <div class="dots" style="position:absolute;inset:0">
+      <span style="position:absolute;width:10px;height:10px;border-radius:50%;background:#E8B04B;top:24%;left:20%"></span>
+      <span style="position:absolute;width:13px;height:13px;border-radius:50%;background:#E07A5F;bottom:26%;right:22%"></span>
+      <span style="position:absolute;width:8px;height:8px;border-radius:50%;background:#7E8E5B;top:32%;right:24%"></span>
+    </div>
+    <div class="explore-in">
+      <span class="eyebrow">Vamos começar</span>
+      <h2 style="margin-top:12px">O que explorar <span class="serif-i">primeiro?</span></h2>
+      <p class="lead" style="margin:12px auto 0">Escolha uma área para conhecer por dentro. Você pode explorar quantas quiser.</p>
+      <div class="select-wrap">
+        <select class="field" id="areaSelect"></select>
+      </div>
+      <div class="center"><a class="btn btn-dark" id="exploreBtn" style="margin-top:8px">Explorar área</a></div>
+      <div class="quick">
+        <span class="chip" data-prof="eng-computacao">Engenharia de Computação</span>
+        <span class="chip" data-prof="medicina">Medicina</span>
+        <span class="chip" data-prof="design">Design</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ PROFISSÃO ============ -->
+<section class="page" id="profissao">
+  <div class="section">
+    <div id="commitWrap" style="max-width:1080px;margin:0 auto;padding:24px 22px 0"></div>
+    <div class="wrap" id="profBody">
+      <h2 class="prof-title">Engenharia de Computação</h2>
+      <div class="gallery">
+        <div class="gcell big" style="background:linear-gradient(135deg,#1C2A3A,#33506e)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 9l-3 3 3 3M16 9l3 3-3 3M13 6l-2 12"/></svg></div>
+        <div class="gcell" style="background:#E07A5F"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="4" width="18" height="13" rx="2"/><path d="M8 21h8"/></svg></div>
+        <div class="gcell" style="background:#7E8E5B"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="4" y="4" width="16" height="16" rx="2"/><path d="M9 4v16M4 9h5"/></svg></div>
+        <div class="gcell" style="background:#E8B04B"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="3"/><path d="M12 2v4M12 18v4M2 12h4M18 12h4"/></svg></div>
+        <div class="gcell" style="background:#243b52"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 6h16v12H4z"/><path d="M4 10h16"/></svg></div>
+        <div class="gcell" style="background:#c9654b"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 3l8 4v6c0 5-4 7-8 8-4-1-8-3-8-8V7z"/></svg></div>
+        <div class="gcell" style="background:#67754a"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 12h4l3 8 4-16 3 8h4"/></svg></div>
+      </div>
+      <div class="info-grid">
+        <div class="info full">
+          <h4><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M4 6h16M4 12h16M4 18h10"/></svg>Descrição e rotina</h4>
+          <p>Projeta e desenvolve sistemas que unem software e hardware — de aplicativos e sites a dispositivos e automações. O dia a dia mistura programação, resolução de problemas, testes e trabalho em equipe, com muito raciocínio lógico e aprendizado constante.</p>
+        </div>
+        <div class="info">
+          <h4><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M12 3l9 4-9 4-9-4z"/><path d="M3 12l9 4 9-4"/></svg>Caminhos de formação</h4>
+          <p>Graduação em Engenharia da Computação, Ciência da Computação ou áreas afins. Cursos técnicos e bootcamps também abrem portas.</p>
+        </div>
+        <div class="info">
+          <h4><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M8 9l-3 3 3 3M16 9l3 3-3 3"/></svg>Habilidades técnicas</h4>
+          <div class="tagrow"><span class="mini">Lógica</span><span class="mini">Programação</span><span class="mini">Banco de dados</span><span class="mini">Redes</span><span class="mini">Algoritmos</span></div>
+        </div>
+        <div class="info">
+          <h4><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/></svg>Habilidades comportamentais</h4>
+          <p>Resolução de problemas, atenção ao detalhe, comunicação, trabalho em equipe e curiosidade para aprender sempre.</p>
+        </div>
+        <div class="info">
+          <h4><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>Salário médio</h4>
+          <p class="money">R$ 5.000 – R$ 8.000</p>
+          <p style="font-size:13px">Início de carreira. Cresce bastante com especialização.</p>
+        </div>
+        <div class="info">
+          <h4><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M12 21s-7-5.5-7-11a7 7 0 0114 0c0 5.5-7 11-7 11z"/><circle cx="12" cy="10" r="2.5"/></svg>Regiões com mais vagas</h4>
+          <div class="tagrow"><span class="mini">São Paulo</span><span class="mini">Rio de Janeiro</span><span class="mini">Curitiba</span><span class="mini">Florianópolis</span><span class="mini">Remoto</span></div>
+        </div>
+        <div class="info">
+          <h4><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M14 4l6 6-9 9H5v-6z"/></svg>Ferramentas usadas</h4>
+          <div class="tagrow"><span class="mini">VS Code</span><span class="mini">Git</span><span class="mini">Python</span><span class="mini">Docker</span><span class="mini">Figma</span></div>
+        </div>
+      </div>
+      <div class="center" style="margin-top:30px">
+        <a class="btn btn-ghost" data-go="famosos">Ver famosos da área
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ FAMOSOS ============ -->
+<section class="page" id="famosos">
+  <div class="section">
+    <div class="wrap">
+      <div class="page-hero">
+        <h2>Famosos <span class="serif-i">para se inspirar</span></h2>
+        <p>Conheça a trajetória de quem marcou a área — para inspiração e referência.</p>
+      </div>
+      <div class="fama-grid" id="famBody">
+        <div class="fama">
+          <div class="port" style="background:rgba(224,122,95,.16)"><svg viewBox="0 0 24 24" fill="none" stroke="#c9654b" stroke-width="1.4"><circle cx="12" cy="8" r="4"/><path d="M4 22c0-5 4-7 8-7s8 2 8 7"/></svg></div>
+          <h4>Nome do Famoso</h4><p>Breve biografia da referência da área.</p>
+        </div>
+        <div class="fama">
+          <div class="port" style="background:rgba(126,142,91,.18)"><svg viewBox="0 0 24 24" fill="none" stroke="#67754a" stroke-width="1.4"><circle cx="12" cy="8" r="4"/><path d="M4 22c0-5 4-7 8-7s8 2 8 7"/></svg></div>
+          <h4>Nome do Famoso</h4><p>Breve biografia da referência da área.</p>
+        </div>
+        <div class="fama">
+          <div class="port" style="background:rgba(232,176,75,.2)"><svg viewBox="0 0 24 24" fill="none" stroke="#a9781b" stroke-width="1.4"><circle cx="12" cy="8" r="4"/><path d="M4 22c0-5 4-7 8-7s8 2 8 7"/></svg></div>
+          <h4>Nome do Famoso</h4><p>Breve biografia da referência da área.</p>
+        </div>
+        <div class="fama">
+          <div class="port" style="background:rgba(28,42,58,.1)"><svg viewBox="0 0 24 24" fill="none" stroke="#1C2A3A" stroke-width="1.4"><circle cx="12" cy="8" r="4"/><path d="M4 22c0-5 4-7 8-7s8 2 8 7"/></svg></div>
+          <h4>Nome do Famoso</h4><p>Breve biografia da referência da área.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ OPORTUNIDADES ============ -->
+<section class="page" id="oportunidades">
+  <div class="section">
+    <div class="wrap">
+      <div class="page-hero">
+        <h2>Oportunidades <span class="serif-i">reais</span></h2>
+        <p>Bolsas, vagas e eventos selecionados para você dar os próximos passos.</p>
+      </div>
+      <div class="grid3">
+        <div class="lc"><span class="tag t-sage">Bolsa de estudo</span><h4>Bolsa integral em curso técnico de programação</h4><p class="meta">Inscrições até 30/08 · Online</p><span class="link" data-go="oportunidades">Ver detalhes →</span></div>
+        <div class="lc"><span class="tag t-terra">Vaga de emprego</span><h4>Estágio em desenvolvimento de software</h4><p class="meta">Híbrido · São Paulo · Até 15/09</p><span class="link" data-go="oportunidades">Ver detalhes →</span></div>
+        <div class="lc"><span class="tag t-mustard">Evento</span><h4>Congresso de Jovens em Tecnologia 2026</h4><p class="meta">12–14/10 · Presencial e online</p><span class="link" data-go="oportunidades">Ver detalhes →</span></div>
+        <div class="lc"><span class="tag t-sage">Bolsa de estudo</span><h4>Programa de mentoria para primeira faculdade</h4><p class="meta">Inscrições abertas · Gratuito</p><span class="link" data-go="oportunidades">Ver detalhes →</span></div>
+        <div class="lc"><span class="tag t-terra">Vaga de emprego</span><h4>Jovem aprendiz em design de produto</h4><p class="meta">Presencial · Curitiba · Até 20/08</p><span class="link" data-go="oportunidades">Ver detalhes →</span></div>
+        <div class="lc"><span class="tag t-mustard">Evento</span><h4>Feira de Profissões Norteens</h4><p class="meta">05/11 · Online e gratuita</p><span class="link" data-go="oportunidades">Ver detalhes →</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ COMUNIDADE ============ -->
+<section class="page" id="comunidade">
+  <div class="section">
+    <div class="wrap">
+      <div class="page-hero">
+        <h2>Comunidade <span class="serif-i">Norteens</span></h2>
+        <p>Um espaço para trocar histórias, tirar dúvidas e não caminhar sozinho.</p>
+      </div>
+      <div class="chips">
+        <span class="chip">🎓 Vestibular</span><span class="chip">💻 Tecnologia</span><span class="chip">🩺 Saúde</span>
+        <span class="chip">🎨 Criativos</span><span class="chip">🔁 Transição de carreira</span><span class="chip">🌱 Autoconhecimento</span>
+      </div>
+      <div class="composer" id="composerBox">
+        <div class="composer-top">
+          <span class="comp-av"><svg class="ch" viewBox="0 0 140 178"><use href="#c-girl" width="140" height="178"/></svg></span>
+          <textarea id="compText" placeholder="Compartilhe algo com a comunidade..."></textarea>
+        </div>
+        <div class="comp-img" id="compImg"></div>
+        <div class="comp-bar">
+          <button class="btn btn-ghost btn-sm" id="addImgBtn"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="3" y="4" width="18" height="16" rx="3"/><circle cx="9" cy="10" r="2"/><path d="M4 18l5-4 4 3 3-2 4 3"/></svg> Foto</button>
+          <button class="btn btn-primary btn-sm" id="publishBtn">Publicar</button>
+        </div>
+      </div>
+      <div class="comp-lock" id="compLock" style="display:none">Entre na sua conta para publicar na comunidade. <button class="btn btn-primary btn-sm" data-go="login">Entrar</button></div>
+      <div class="feed" id="feed"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ CONTEÚDOS ============ -->
+<section class="page" id="conteudos">
+  <div class="section">
+    <div class="wrap">
+      <div class="page-hero">
+        <h2>Conteúdos <span class="serif-i">para crescer</span></h2>
+        <p>Artigos, e-books e vídeos sobre autoconhecimento, emoções e carreira.</p>
+      </div>
+      <div class="grid3">
+        <div class="lc"><span class="tag t-terra">Artigo</span><h4>Como lidar com a pressão de escolher uma profissão</h4><p class="meta">6 min de leitura</p><span class="link" data-go="conteudos">Ler agora →</span></div>
+        <div class="lc"><span class="tag t-sage">E-book</span><h4>Guia do autoconhecimento para a escolha de carreira</h4><p class="meta">PDF · 42 páginas</p><span class="link" data-go="conteudos">Baixar →</span></div>
+        <div class="lc"><span class="tag t-navy">Vídeo</span><h4>Inteligência emocional na hora de decidir</h4><p class="meta">Aula · 14 min</p><span class="link" data-go="conteudos">Assistir →</span></div>
+        <div class="lc"><span class="tag t-terra">Artigo</span><h4>O que ninguém te conta sobre mudar de carreira</h4><p class="meta">8 min de leitura</p><span class="link" data-go="conteudos">Ler agora →</span></div>
+        <div class="lc"><span class="tag t-navy">Vídeo</span><h4>Entendendo seu perfil DISC na prática</h4><p class="meta">Aula · 10 min</p><span class="link" data-go="conteudos">Assistir →</span></div>
+        <div class="lc"><span class="tag t-sage">E-book</span><h4>Experimente a profissão: um dia na vida real</h4><p class="meta">PDF · 28 páginas</p><span class="link" data-go="conteudos">Baixar →</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ NOTÍCIAS ============ -->
+<section class="page" id="noticias">
+  <div class="section">
+    <div class="wrap">
+      <div class="page-hero">
+        <h2>Notícias <span class="serif-i">da plataforma</span></h2>
+        <p>Novidades, atualizações e o que está rolando na Norteens.</p>
+      </div>
+      <div class="grid2">
+        <div class="lc"><span class="tag t-mustard">Novidade</span><h4>Chegou o novo mural dos sonhos</h4><p style="color:var(--ink-soft);font-size:14.5px">Agora você monta seu quadro de desejos e ele ajuda a direcionar sua mentoria.</p><p class="meta">Publicado hoje</p></div>
+        <div class="lc"><span class="tag t-sage">Parceria</span><h4>Norteens nas escolas</h4><p style="color:var(--ink-soft);font-size:14.5px">Fechamos parceria com as primeiras escolas para levar orientação de carreira aos alunos.</p><p class="meta">Há 4 dias</p></div>
+        <div class="lc"><span class="tag t-terra">Comunidade</span><h4>+1.000 jovens na plataforma</h4><p style="color:var(--ink-soft);font-size:14.5px">Batemos a marca de mil jovens começando a jornada de autoconhecimento. Obrigado!</p><p class="meta">Há 1 semana</p></div>
+        <div class="lc"><span class="tag t-navy">Evento</span><h4>Encontro ao vivo com ARPs</h4><p style="color:var(--ink-soft);font-size:14.5px">Uma conversa aberta sobre o lado emocional da escolha de carreira. Inscreva-se.</p><p class="meta">Há 1 semana</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ CONFIGURAÇÕES ============ -->
+<section class="page config" id="config">
+  <div class="section">
+    <div class="wrap cfg-wrap">
+      <div class="page-hero" style="text-align:left">
+        <span class="eyebrow">Área de configuração</span>
+        <h2>Configurações</h2>
+        <p>Ajuste a aparência e o conteúdo da plataforma.</p>
+      </div>
+
+      <div class="cfg-card" id="cardPaleta">
+        <h3>Aparência</h3>
+        <p class="sub">Escolha a paleta de cores do site — a troca é aplicada na hora.</p>
+        <div class="pal-grid" id="paletaGrid"></div>
+      </div>
+
+      <div class="cfg-card lock-hide-card" id="cardProf">
+        <h3>Profissões</h3>
+        <p class="sub">Adicione e edite as profissões que aparecem na plataforma.</p>
+        <div id="profAdmin"></div>
+        <div class="lock-hide" id="addProfWrap" style="margin-top:16px"><button class="btn btn-ghost btn-sm" id="addProfBtn">+ Adicionar profissão</button></div>
+        <div class="cfg-form" id="profForm">
+          <div><label>Nome</label><input name="nome"></div>
+          <div><label>Ícone</label><select name="icone"><option value="code">Tecnologia</option><option value="health">Saúde</option><option value="design">Design</option><option value="law">Direito</option><option value="brain">Humanas</option></select></div>
+          <div><label>Descrição e rotina</label><textarea name="descricao"></textarea></div>
+          <div><label>Caminhos de formação</label><textarea name="formacao"></textarea></div>
+          <div><label>Habilidades comportamentais</label><textarea name="comportamentais"></textarea></div>
+          <div><label>Salário médio</label><input name="salario" placeholder="R$ 0.000 – R$ 0.000"></div>
+          <div><label>Habilidades técnicas (separe por vírgula)</label><input name="tecnicas"></div>
+          <div><label>Regiões com mais vagas (vírgula)</label><input name="regioes"></div>
+          <div><label>Ferramentas usadas (vírgula)</label><input name="ferramentas"></div>
+          <div class="lock-bar"><button class="btn btn-primary btn-sm" id="saveProfBtn">Salvar</button><button class="btn btn-ghost btn-sm" id="cancelProfBtn">Cancelar</button></div>
+        </div>
+      </div>
+
+      <div class="cfg-card lock-hide-card" id="cardTeste">
+        <h3>Teste comportamental</h3>
+        <p class="sub">As perguntas que os usuários respondem no teste.</p>
+        <div id="testAdmin"></div>
+        <div class="cfg-note" style="margin-top:14px">Prévia com perguntas de exemplo. Quando você enviar o modelo com as 20 questões, elas entram aqui como dados editáveis.</div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+</main>
+
+<!-- ============ FOOTER ============ -->
+<footer>
+  <div class="wrap foot">
+    <div>
+      <div class="brand">
+        <svg class="mark" viewBox="0 0 32 32" fill="none" aria-hidden="true"><circle cx="16" cy="16" r="14.5" stroke="#E07A5F" stroke-width="2"/><path d="M16 5 L19.5 16 L16 27 L12.5 16 Z" fill="#E07A5F"/><path d="M5 16 L16 12.5 L27 16 L16 19.5 Z" fill="#F4EFE6"/><circle cx="16" cy="16" r="2.4" fill="#1C2A3A"/></svg>
+        Norteens
+      </div>
+      <p>Encontre seu caminho começando por você. Orientação de carreira e autoconhecimento para cada fase da sua jornada.</p>
+    </div>
+    <div>
+      <h5>Plataforma</h5>
+      <a data-go="home">Início</a><a data-go="explorar">Profissões</a><a data-go="oportunidades">Oportunidades</a><a data-go="teste">Fazer teste</a>
+    </div>
+    <div>
+      <h5>Explorar</h5>
+      <a data-go="conteudos">Conteúdos</a><a data-go="famosos">Famosos</a><a data-go="comunidade">Comunidade</a><a data-go="noticias">Notícias</a>
+    </div>
+    <div>
+      <h5>Conta</h5>
+      <a data-go="login">Entrar</a><a data-go="login">Criar conta</a><a data-go="welcome">Minha jornada</a>
+    </div>
+  </div>
+  <div class="wrap foot-bottom">
+    <span>Protótipo de layout · Norteens © 2026</span>
+    <div class="social">
+      <a aria-label="Instagram"><svg viewBox="0 0 24 24" fill="none" stroke="#CFC9BE" stroke-width="1.7"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="#CFC9BE"/></svg></a>
+      <a aria-label="TikTok"><svg viewBox="0 0 24 24" fill="none" stroke="#CFC9BE" stroke-width="1.7"><path d="M15 4c.5 3 2.5 4.5 5 5v3c-2 0-3.7-.6-5-1.6V16a5 5 0 11-5-5"/></svg></a>
+      <a aria-label="YouTube"><svg viewBox="0 0 24 24" fill="none" stroke="#CFC9BE" stroke-width="1.7"><rect x="3" y="6" width="18" height="12" rx="3"/><path d="M11 9l4 3-4 3z" fill="#CFC9BE" stroke="none"/></svg></a>
+    </div>
+  </div>
+</footer>
+
+<script src="profissoes.js"></script>
+<script>
+  var ORDER = Object.keys(PROFISSOES);
+  var PAL=['var(--terra)','var(--sage)','var(--mustard)','var(--navy-2)','var(--terra-d)','var(--sage-d)'];
+  var ICONS={
+    code:'<path d="M8 9l-3 3 3 3M16 9l3 3-3 3M13 6l-2 12"/>',
+    health:'<path d="M12 21S4 14 4 9a4 4 0 018-1 4 4 0 018 1c0 5-8 12-8 12z"/><path d="M12 8v5M9.5 10.5h5"/>',
+    design:'<path d="M14 4l6 6-9 9H5v-6z"/>',
+    law:'<path d="M5 4h12a2 2 0 012 2v13H7a2 2 0 01-2-2z"/><path d="M9 4v15"/>',
+    brain:'<path d="M9 5a3 3 0 016 0 3 3 0 012 5 3 3 0 01-2 5 3 3 0 01-6 0 3 3 0 01-2-5 3 3 0 012-5z"/><path d="M12 5v14"/>'
+  };
+  var GAL=[
+    '<rect x="3" y="4" width="18" height="13" rx="2"/><path d="M8 21h8"/>',
+    '<path d="M5 4h12a2 2 0 012 2v13H7a2 2 0 01-2-2z"/><path d="M5 17h12"/>',
+    '<path d="M9 18h6M10 21h4M12 3a6 6 0 014 10c-1 1-1 2-1 3H9c0-1 0-2-1-3a6 6 0 014-10z"/>',
+    '<path d="M4 20V4M4 20h16M8 16v-4M12 16V8M16 16v-7"/>',
+    '<circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="3"/>',
+    '<circle cx="12" cy="12" r="3"/><path d="M12 3v3M12 18v3M3 12h3M18 12h3M6 6l2 2M16 16l2 2M18 6l-2 2M8 16l-2 2"/>'
+  ];
+  var HIC={
+    list:'<path d="M4 6h16M4 12h16M4 18h10"/>',
+    cap:'<path d="M12 3l9 4-9 4-9-4z"/><path d="M3 12l9 4 9-4"/>',
+    code:'<path d="M8 9l-3 3 3 3M16 9l3 3-3 3"/>',
+    user:'<circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/>',
+    clock:'<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',
+    pin:'<path d="M12 21s-7-5.5-7-11a7 7 0 0114 0c0 5.5-7 11-7 11z"/><circle cx="12" cy="10" r="2.5"/>',
+    tool:'<path d="M14 4l6 6-9 9H5v-6z"/>'
+  };
+  var CHARS=['c-cap','c-girl','c-curly','c-glasses'];
+  var FPAL=['rgba(224,122,95,.16)','rgba(126,142,91,.18)','rgba(232,176,75,.2)','rgba(28,42,58,.1)'];
+  function ii(p){return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">'+p+'</svg>';}
+  function hi(k){return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7">'+HIC[k]+'</svg>';}
+  function tags(a){return '<div class="tagrow">'+a.map(function(t){return '<span class="mini">'+t+'</span>';}).join('')+'</div>';}
+
+  function renderProfissao(slug){
+    var p=PROFISSOES[slug]; if(!p)return;
+    var gal=GAL.map(function(g,i){return '<div class="gcell" style="background:'+PAL[i%PAL.length]+'">'+ii(g)+'</div>';}).join('');
+    document.getElementById('profBody').innerHTML=
+      '<h2 class="prof-title">'+p.nome+'</h2>'+
+      '<div class="gallery"><div class="gcell big" style="background:linear-gradient(135deg,var(--navy),var(--navy-2))">'+ii(ICONS[p.icone]||ICONS.code)+'</div>'+gal+'</div>'+
+      '<div class="info-grid">'+
+        '<div class="info full"><h4>'+hi('list')+'Descrição e rotina</h4><p>'+p.descricao+'</p></div>'+
+        '<div class="info"><h4>'+hi('cap')+'Caminhos de formação</h4><p>'+p.formacao+'</p></div>'+
+        '<div class="info"><h4>'+hi('code')+'Habilidades técnicas</h4>'+tags(p.tecnicas)+'</div>'+
+        '<div class="info"><h4>'+hi('user')+'Habilidades comportamentais</h4><p>'+p.comportamentais+'</p></div>'+
+        '<div class="info"><h4>'+hi('clock')+'Salário médio</h4><p class="money">'+p.salario+'</p><p style="font-size:13px">Início de carreira. Cresce com especialização.</p></div>'+
+        '<div class="info"><h4>'+hi('pin')+'Regiões com mais vagas</h4>'+tags(p.regioes)+'</div>'+
+        '<div class="info"><h4>'+hi('tool')+'Ferramentas usadas</h4>'+tags(p.ferramentas)+'</div>'+
+      '</div>'+
+      '<div class="center" style="margin-top:30px"><a class="btn btn-ghost" data-fam="'+slug+'">Ver famosos da área '+ii('<path d="M5 12h14M13 6l6 6-6 6"/>')+'</a></div>';
+  }
+  function renderFamosos(slug){
+    var p=PROFISSOES[slug]; var arr=(p&&p.famosos)||[];
+    document.getElementById('famBody').innerHTML=arr.map(function(f,i){
+      return '<div class="fama"><div class="port" style="background:'+FPAL[i%4]+'"><svg class="ch" viewBox="0 0 140 178"><use href="#'+CHARS[i%4]+'" width="140" height="178"/></svg></div><h4>'+f.nome+'</h4><p>'+f.bio+'</p></div>';
+    }).join('');
+  }
+  function openProfissao(slug){ renderProfissao(slug); renderFamosos(slug); go('profissao'); }
+
+  function go(id){
+    var t=document.getElementById(id); if(!t)return;
+    document.querySelectorAll('.page').forEach(function(p){p.classList.remove('active');});
+    t.classList.add('active');
+    document.querySelectorAll('[data-nav]').forEach(function(a){a.classList.toggle('nav-active',a.getAttribute('data-nav')===id);});
+    document.getElementById('nav').classList.remove('open');
+    window.scrollTo(0,0);
+  }
+  document.addEventListener('click',function(e){
+    var g=e.target.closest('[data-go]'); if(g){e.preventDefault();go(g.getAttribute('data-go'));return;}
+    var pr=e.target.closest('[data-prof]'); if(pr){e.preventDefault();openProfissao(pr.getAttribute('data-prof'));return;}
+    var fm=e.target.closest('[data-fam]'); if(fm){e.preventDefault();renderFamosos(fm.getAttribute('data-fam'));go('famosos');return;}
+  });
+  document.getElementById('mtoggle').addEventListener('click',function(){document.getElementById('nav').classList.toggle('open');});
+
+  var sel=document.getElementById('areaSelect');
+  sel.innerHTML=ORDER.map(function(k){return '<option value="'+k+'">'+PROFISSOES[k].nome+'</option>';}).join('');
+  document.getElementById('exploreBtn').addEventListener('click',function(){openProfissao(sel.value);});
+
+  renderProfissao(ORDER[0]);
+  renderFamosos(ORDER[0]);
+</script>
+<script>
+/* ---- armazenamento (com fallback em memória) ---- */
+var DB={_m:{},get:function(k,d){try{var v=localStorage.getItem('norteens_'+k);if(v!==null)return JSON.parse(v);}catch(e){}return this._m[k]!==undefined?this._m[k]:d;},set:function(k,v){this._m[k]=v;try{localStorage.setItem('norteens_'+k,JSON.stringify(v));}catch(e){}}};
+
+/* ===== papéis / permissões (protótipo) ===== */
+var ROLE_LABEL={usuario:'Usuária',arp:'ARP',dono:'Dona'};
+var CONTAS={
+  'regiane@norteens.com':{senha:'123',nome:'Regiane',role:'dono'},
+  'gi@norteens.com':{senha:'123',nome:'Gi',role:'dono'},
+  'arp.tech@norteens.com':{senha:'123',nome:'ARP · Tecnologia',role:'arp',profissao:'eng-computacao'},
+  'arp.saude@norteens.com':{senha:'123',nome:'ARP · Saúde',role:'arp',profissao:'medicina'},
+  'arp.design@norteens.com':{senha:'123',nome:'ARP · Design',role:'arp',profissao:'design'}
+};
+function sessao(){return DB.get('sessao',null);}
+function papel(){var s=sessao();return s?s.role:'visitante';}
+function can(cap){var r=papel();switch(cap){
+  case 'teste':case 'profissao':case 'postar':return r!=='visitante';
+  case 'config':return r==='arp'||r==='dono';
+  case 'paleta':case 'editarTeste':case 'editarTodasProf':return r==='dono';
+  default:return false;}}
+
+/* ---- paletas de cores (troque os 4 alternativos pelos seus depois) ---- */
+var PALETAS={
+  original:{nome:'Original',vars:{'--cream':'#F7F0E6','--cream-2':'#F1E7D8','--card':'#FFFDF8','--ink':'#2B2A26','--ink-soft':'#726A5F','--terra':'#E07A5F','--terra-d':'#C9654B','--sage':'#7E8E5B','--sage-d':'#67754A','--navy':'#1C2A3A','--navy-2':'#243B52','--mustard':'#E8B04B','--line':'rgba(28,42,58,.10)'}},
+  oceano:{nome:'Oceano',vars:{'--cream':'#EDF3F5','--cream-2':'#DEEAEE','--card':'#FBFDFE','--ink':'#14303A','--ink-soft':'#597480','--terra':'#2E90A8','--terra-d':'#1F6C80','--sage':'#5FA3B0','--sage-d':'#437D89','--navy':'#0F2A33','--navy-2':'#17414C','--mustard':'#E6B85C','--line':'rgba(15,42,51,.10)'}},
+  porsol:{nome:'Pôr do sol',vars:{'--cream':'#FCF0E8','--cream-2':'#F7E1D4','--card':'#FFFCF9','--ink':'#3A2130','--ink-soft':'#7C5A63','--terra':'#E4572E','--terra-d':'#C23F1C','--sage':'#EE9A54','--sage-d':'#CE7C36','--navy':'#3A2233','--navy-2':'#512E47','--mustard':'#F2C14E','--line':'rgba(58,34,51,.10)'}},
+  floresta:{nome:'Floresta',vars:{'--cream':'#EEF3E9','--cream-2':'#E1EAD6','--card':'#FBFDF8','--ink':'#20301F','--ink-soft':'#5E7057','--terra':'#4C9A5B','--terra-d':'#377544','--sage':'#8AA36A','--sage-d':'#67804A','--navy':'#1B2C1E','--navy-2':'#284232','--mustard':'#D9A441','--line':'rgba(27,44,30,.10)'}},
+  noite:{nome:'Noite',vars:{'--cream':'#1D1B24','--cream-2':'#252230','--card':'#2A2733','--ink':'#EDE9F2','--ink-soft':'#A79FB4','--terra':'#C77DFF','--terra-d':'#B15BFF','--sage':'#7EE0B8','--sage-d':'#57C79A','--navy':'#100E17','--navy-2':'#1A1726','--mustard':'#F2C14E','--line':'rgba(255,255,255,.12)'}}
+};
+function applyPalette(k){var p=PALETAS[k]||PALETAS.original;var r=document.documentElement;for(var v in p.vars){r.style.setProperty(v,p.vars[v]);}DB.set('paleta',k);var g=document.getElementById('paletaGrid');if(g){g.querySelectorAll('.pal').forEach(function(b){b.classList.toggle('pal-active',b.getAttribute('data-pal')===k);});}}
+function buildPaletas(){var g=document.getElementById('paletaGrid');if(!g)return;g.innerHTML=Object.keys(PALETAS).map(function(k){var v=PALETAS[k].vars;return '<button class="pal" data-pal="'+k+'"><span class="pal-dots"><i style="background:'+v['--terra']+'"></i><i style="background:'+v['--sage']+'"></i><i style="background:'+v['--mustard']+'"></i><i style="background:'+v['--navy']+'"></i></span><span class="pal-name">'+PALETAS[k].nome+'</span></button>';}).join('');}
+
+/* ---- bloqueio (configura uma vez) ---- */
+function isLocked(){return false;}
+function applyLockUI(){var locked=isLocked();var c=document.getElementById('config');if(c)c.classList.toggle('locked',locked);var lb=document.getElementById('lockBtn'),ub=document.getElementById('unlockBtn');if(lb){lb.textContent=locked?'Configurações bloqueadas ✓':'Concluir e bloquear configurações';lb.disabled=locked;lb.style.opacity=locked?'.6':'1';}if(ub)ub.style.display=locked?'inline-flex':'none';renderProfAdmin();}
+
+/* ---- gestão de profissões ---- */
+var editingKey=null;
+function renderProfAdmin(){var el=document.getElementById('profAdmin');if(!el)return;var keys=Object.keys(PROFISSOES);if(papel()==='arp'){var s=sessao();keys=keys.filter(function(k){return s&&k===s.profissao;});}el.innerHTML=keys.map(function(k){var p=PROFISSOES[k];return '<div class="adm-row"><div><b>'+p.nome+'</b><span class="adm-meta">'+p.salario+'</span></div><button class="btn btn-ghost btn-sm" data-editprof="'+k+'">Editar</button></div>';}).join('')||'<p class="sub">Nenhuma profissão atribuída a você ainda.</p>';}
+function fillForm(p){var f=document.getElementById('profForm');function s(n,v){f.querySelector('[name='+n+']').value=v;}s('nome',p.nome||'');s('icone',p.icone||'code');s('descricao',p.descricao||'');s('formacao',p.formacao||'');s('comportamentais',p.comportamentais||'');s('salario',p.salario||'');s('tecnicas',(p.tecnicas||[]).join(', '));s('regioes',(p.regioes||[]).join(', '));s('ferramentas',(p.ferramentas||[]).join(', '));}
+function openProfForm(k){editingKey=k||null;fillForm(k?PROFISSOES[k]:{});document.getElementById('profForm').classList.add('open');}
+function rebuildOrder(){ORDER.length=0;Object.keys(PROFISSOES).forEach(function(k){ORDER.push(k);});var sel=document.getElementById('areaSelect');if(sel)sel.innerHTML=ORDER.map(function(k){return '<option value="'+k+'">'+PROFISSOES[k].nome+'</option>';}).join('');}
+function saveProf(){var f=document.getElementById('profForm');function g(n){return f.querySelector('[name='+n+']').value.trim();}function arr(n){return g(n).split(',').map(function(s){return s.trim();}).filter(Boolean);}if(!g('nome'))return;var slug=editingKey||('prof-'+Date.now());var prev=editingKey?PROFISSOES[editingKey]:{};PROFISSOES[slug]={nome:g('nome'),icone:g('icone'),descricao:g('descricao'),formacao:g('formacao'),tecnicas:arr('tecnicas'),comportamentais:g('comportamentais'),salario:g('salario'),regioes:arr('regioes'),ferramentas:arr('ferramentas'),famosos:prev.famosos||[]};DB.set('profissoes',PROFISSOES);rebuildOrder();renderProfAdmin();renderProfissao(slug);document.getElementById('profForm').classList.remove('open');editingKey=null;}
+
+/* ---- teste (dados) ---- */
+var PERGUNTAS=[
+  {q:'Quando um projeto atrasa e ninguém toma uma decisão, você tende a…',e:'Esperar o grupo chegar a um consenso',d:'Assumir o controle e definir o próximo passo'},
+  {q:'Ao receber uma tarefa nova, sua primeira reação é…',e:'Entender todos os detalhes antes de começar',d:'Começar logo e ir ajustando no caminho'},
+  {q:'Numa discussão em que você discorda da maioria, você normalmente…',e:'Cede para preservar o clima do grupo',d:'Defende sua posição com dados e firmeza'}
+];
+function renderTeste(){var el=document.getElementById('testeBody');if(!el)return;if(!can('teste')){el.innerHTML='<div class="qcard" style="text-align:center"><div class="qn">Acesso restrito</div><h3>Entre para fazer o teste</h3><p style="color:var(--ink-soft);margin-top:8px">O teste comportamental faz parte da sua jornada. Crie sua conta ou entre para começar.</p><div class="center" style="margin-top:16px"><a class="btn btn-primary" data-go="login">Entrar / Criar conta</a></div></div>';return;}if(DB.get('testeFeito',false)){el.innerHTML='<div class="qcard" style="text-align:center"><div class="qn">Teste concluído</div><h3>Você já respondeu o teste ✓</h3><p style="color:var(--ink-soft);margin-top:8px">O teste comportamental é feito uma única vez. Você pode rever seu resultado quando quiser.</p><div class="center" style="margin-top:16px"><a class="btn btn-primary" data-go="resultado">Ver meu resultado</a></div></div>';return;}var t=PERGUNTAS.length;el.innerHTML=PERGUNTAS.map(function(q,i){return '<div class="qcard"><div class="qn">Pergunta '+(i+1)+' de '+t+'</div><h3>'+q.q+'</h3><input class="slider" type="range" min="0" max="100" value="50" aria-label="Pergunta '+(i+1)+'"><div class="ends"><span>'+q.e+'</span><span>'+q.d+'</span></div></div>';}).join('');}
+function renderTestAdmin(){var el=document.getElementById('testAdmin');if(!el)return;el.innerHTML='<div style="font-weight:600;margin-bottom:8px">'+PERGUNTAS.length+' perguntas cadastradas</div>'+PERGUNTAS.map(function(q,i){return '<div class="q-preview"><span class="qi">'+(i+1)+'.</span>'+q.q+'</div>';}).join('');}
+
+/* ---- comunidade (rede social) ---- */
+var heartLine='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 21S4 14 4 9a4 4 0 018-1 4 4 0 018 1c0 5-8 12-8 12z"/></svg>';
+var heartFull='<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 21S4 14 4 9a4 4 0 018-1 4 4 0 018 1c0 5-8 12-8 12z"/></svg>';
+var cmtIcon='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 12a8 8 0 01-11.5 7.2L4 20l1-4.5A8 8 0 1121 12z"/></svg>';
+var IMGS=['linear-gradient(135deg,#E07A5F,#E8B04B)','linear-gradient(135deg,#7E8E5B,#B7C48F)','linear-gradient(135deg,#243B52,#4C86A8)','linear-gradient(135deg,#C77DFF,#8AA6FF)'];
+var SEED=[
+  {nome:'Marina',char:'c-girl',cor:'#E07A5F',tempo:'há 2 h · Vestibular',texto:'Fiz o teste e deu Conformidade! Alguém da área de dados pra contar como é a rotina de verdade? 💻',img:IMGS[2],likes:34,comentarios:12,liked:false},
+  {nome:'Rafael',char:'c-cap',cor:'#7E8E5B',tempo:'há 5 h · Transição',texto:'Larguei uma área que não me fazia bem. A mentoria com o ARP me ajudou a decidir sem culpa. 🙌',img:'',likes:51,comentarios:8,liked:false},
+  {nome:'Bruna',char:'c-curly',cor:'#E8B04B',tempo:'ontem · Autoconhecimento',texto:'Meu mural dos sonhos ficou lindo! Quem topa fazer junto? ✨',img:IMGS[0],likes:78,comentarios:20,liked:false}
+];
+var POSTS=DB.get('posts',null)||SEED.slice();
+var compImgActive=null,imgIdx=0;
+function renderFeed(){var el=document.getElementById('feed');if(!el)return;el.innerHTML=POSTS.map(function(p,i){return '<article class="post-card"><header class="pc-head"><span class="pc-av" style="background:'+p.cor+'"><svg class="ch" viewBox="0 0 140 178"><use href="#'+p.char+'" width="140" height="178"/></svg></span><div><div class="pc-name">'+p.nome+'</div><div class="pc-time">'+p.tempo+'</div></div></header>'+(p.img?'<div class="pc-img" style="background:'+p.img+'"></div>':'')+'<div class="pc-actions"><button class="pc-btn '+(p.liked?'liked':'')+'" data-like="'+i+'">'+(p.liked?heartFull:heartLine)+'<span>'+p.likes+'</span></button><button class="pc-btn">'+cmtIcon+'<span>'+p.comentarios+'</span></button></div><div class="pc-cap"><b>'+p.nome+'</b>'+p.texto+'</div></article>';}).join('');}
+function publish(){if(!can('postar')){go('login');return;}var t=document.getElementById('compText');var txt=(t.value||'').trim();if(!txt&&!compImgActive)return;var s=sessao();POSTS.unshift({nome:(s&&s.nome)||'Você',char:'c-girl',cor:'#E07A5F',tempo:'agora',texto:txt,img:compImgActive||'',likes:0,comentarios:0,liked:false});DB.set('posts',POSTS);t.value='';compImgActive=null;document.getElementById('compImg').classList.remove('show');renderFeed();}
+function toggleLike(i){var p=POSTS[i];if(!p)return;p.liked=!p.liked;p.likes+=p.liked?1:-1;DB.set('posts',POSTS);renderFeed();}
+
+/* ---- eventos ---- */
+document.addEventListener('click',function(e){
+  var pal=e.target.closest('[data-pal]'); if(pal){applyPalette(pal.getAttribute('data-pal'));return;}
+  var ep=e.target.closest('[data-editprof]'); if(ep){openProfForm(ep.getAttribute('data-editprof'));return;}
+  var lk=e.target.closest('[data-like]'); if(lk){toggleLike(+lk.getAttribute('data-like'));return;}
+});
+function on(id,fn){var el=document.getElementById(id);if(el)el.addEventListener('click',fn);}
+on('addProfBtn',function(){openProfForm(null);});
+on('saveProfBtn',saveProf);
+on('cancelProfBtn',function(){document.getElementById('profForm').classList.remove('open');editingKey=null;});
+on('lockBtn',function(){if(!isLocked()){DB.set('lock',true);applyLockUI();}});
+on('unlockBtn',function(){DB.set('lock',false);applyLockUI();});
+on('publishBtn',publish);
+on('addImgBtn',function(){compImgActive=IMGS[imgIdx%IMGS.length];imgIdx++;var ci=document.getElementById('compImg');ci.style.background=compImgActive;ci.classList.add('show');});
+
+/* ---- init ---- */
+(function(){
+  var saved=DB.get('profissoes',null);
+  if(saved){for(var k in saved){PROFISSOES[k]=saved[k];}}
+  rebuildOrder();
+  buildPaletas();
+  applyPalette(DB.get('paleta','original'));
+  renderTeste();
+  renderTestAdmin();
+  renderProfAdmin();
+  renderFeed();
+  applyLockUI();
+  if(ORDER[0]){renderProfissao(ORDER[0]);renderFamosos(ORDER[0]);}
+})();
+</script>
+<script>
+/* ===== trava do lado da usuária: teste 1x + profissão fixa ===== */
+function testeFeito(){return DB.get('testeFeito',false);}
+function marcarTesteFeito(){if(!testeFeito()){DB.set('testeFeito',true);applyTesteLock();}}
+function applyTesteLock(){
+  var done=testeFeito();
+  var topo=document.getElementById('ctaTesteTopo');
+  if(topo){topo.textContent=done?'Meu resultado':'Fazer teste';topo.setAttribute('data-go',done?'resultado':'teste');}
+  document.querySelectorAll('.teste-cta').forEach(function(el){el.style.display=done?'none':'';});
+  var sub=document.getElementById('testeSubmit'); if(sub)sub.style.display=done?'none':'';
+  renderTeste();
+}
+var currentProf=null;
+if(typeof openProfissao==='function'){
+  var _openProf=openProfissao;
+  openProfissao=function(slug){currentProf=slug;_openProf(slug);renderCommitBar(slug);};
+}
+function renderCommitBar(slug){
+  var el=document.getElementById('commitWrap'); if(!el)return;
+  currentProf=slug;
+  if(!can('profissao')){el.innerHTML='<div class="commit-bar hint">Entre na sua conta para definir sua profissão. <a data-go="login">Entrar</a></div>';return;}
+  var mine=DB.get('minhaProfissao',null), done=testeFeito();
+  if(mine){
+    if(mine===slug){el.innerHTML='<div class="commit-bar mine">✓ Esta é a sua profissão</div>';}
+    else{el.innerHTML='<div class="commit-bar locked">🔒 Você já definiu sua profissão: <b>'+(PROFISSOES[mine]?PROFISSOES[mine].nome:'—')+'</b>. Não é possível alterar.</div>';}
+  }else if(!done){
+    el.innerHTML='<div class="commit-bar hint">Responda o <a data-go="teste">teste comportamental</a> para poder definir sua profissão.</div>';
+  }else{
+    el.innerHTML='<div class="commit-bar"><span>Essa é a sua área?</span><button class="btn btn-primary btn-sm" data-commit="'+slug+'">Definir como minha profissão</button></div>';
+  }
+}
+document.addEventListener('click',function(e){
+  if(e.target.closest('[data-go="resultado"]')){marcarTesteFeito();}
+  var cm=e.target.closest('[data-commit]');
+  if(cm){e.preventDefault();if(DB.get('minhaProfissao',null))return;if(!testeFeito())return;DB.set('minhaProfissao',cm.getAttribute('data-commit'));renderCommitBar(cm.getAttribute('data-commit'));}
+});
+(function(){
+  document.querySelectorAll('[data-go="teste"]').forEach(function(el){if(el.id!=='ctaTesteTopo')el.classList.add('teste-cta');});
+  applyTesteLock();
+  renderCommitBar(currentProf||(ORDER&&ORDER[0]));
+})();
+</script>
+<script>
+/* ===== login / cadastro / sessão ===== */
+function usuariosDB(){return DB.get('usuarios',{});}
+function loginRoute(){var r=papel();if(r==='dono'||r==='arp')go('config');else go('welcome');}
+function entrar(email,senha){email=(email||'').trim().toLowerCase();var acc=CONTAS[email]||usuariosDB()[email];if(!acc||acc.senha!==senha)return false;DB.set('sessao',{email:email,nome:acc.nome,role:acc.role,profissao:acc.profissao||null});aplicarSessao();return true;}
+function cadastrar(nome,email,senha){nome=(nome||'').trim();email=(email||'').trim().toLowerCase();if(!nome||!email||!senha)return 'preencha';if(CONTAS[email]||usuariosDB()[email])return 'existe';var us=usuariosDB();us[email]={senha:senha,nome:nome,role:'usuario'};DB.set('usuarios',us);DB.set('sessao',{email:email,nome:nome,role:'usuario',profissao:null});aplicarSessao();return 'ok';}
+function demoLogin(role){if(role==='usuario'){DB.set('sessao',{email:'ana@demo.com',nome:'Ana (demo)',role:'usuario',profissao:null});}else{var e=(role==='dono')?'regiane@norteens.com':'arp.tech@norteens.com';var a=CONTAS[e];DB.set('sessao',{email:e,nome:a.nome,role:a.role,profissao:a.profissao||null});}aplicarSessao();}
+function sair(){DB.set('sessao',null);aplicarSessao();go('home');}
+function aplicarSessao(){renderHeader();renderConfigForRole();renderComposerGate();renderTeste();var s=sessao();var un=document.getElementById('uname');if(un&&s)un.textContent=s.nome;renderCommitBar(currentProf||(ORDER&&ORDER[0]));}
+function renderHeader(){var gb=document.getElementById('gearBtn'),lb=document.getElementById('loginBtn'),uc=document.getElementById('userChip');if(gb)gb.style.display=can('config')?'':'none';var s=sessao();if(uc&&lb){if(s){lb.style.display='none';uc.style.display='flex';uc.innerHTML='<span class="role-badge role-'+s.role+'">'+(ROLE_LABEL[s.role]||'')+'</span><span class="uc-name">'+s.nome+'</span><button class="uc-out" id="logoutBtn">Sair</button>';}else{lb.style.display='';uc.style.display='none';uc.innerHTML='';}}}
+function renderConfigForRole(){var dono=papel()==='dono';var cp=document.getElementById('cardPaleta'),ct=document.getElementById('cardTeste'),ap=document.getElementById('addProfWrap');if(cp)cp.style.display=dono?'':'none';if(ct)ct.style.display=dono?'':'none';if(ap)ap.style.display=dono?'':'none';renderProfAdmin();}
+function renderComposerGate(){var box=document.getElementById('composerBox'),lock=document.getElementById('compLock');var ok=can('postar');if(box)box.style.display=ok?'':'none';if(lock)lock.style.display=ok?'none':'flex';}
+function val(id){var el=document.getElementById(id);return el?el.value:'';}
+document.addEventListener('click',function(e){
+  if(e.target.closest('#logoutBtn')){sair();return;}
+  var d=e.target.closest('[data-demo]');if(d){demoLogin(d.getAttribute('data-demo'));loginRoute();return;}
+  if(e.target.closest('#toSignup')){document.getElementById('loginMode').style.display='none';document.getElementById('signupMode').style.display='';return;}
+  if(e.target.closest('#toLogin')){document.getElementById('signupMode').style.display='none';document.getElementById('loginMode').style.display='';return;}
+  if(e.target.closest('#doLogin')){var m=document.getElementById('authMsg');var ok=entrar(val('loginEmail'),val('loginSenha'));if(!ok){if(m){m.textContent='E-mail ou senha inválidos.';m.className='auth-msg err';}}else{if(m){m.textContent='';m.className='auth-msg';}loginRoute();}return;}
+  if(e.target.closest('#doSignup')){var m2=document.getElementById('authMsg2');var r=cadastrar(val('suNome'),val('suEmail'),val('suSenha'));if(r==='ok'){if(m2){m2.textContent='';m2.className='auth-msg';}loginRoute();}else if(m2){m2.textContent=r==='existe'?'Esse e-mail já tem conta.':'Preencha todos os campos.';m2.className='auth-msg err';}return;}
+});
+aplicarSessao();
+</script>
+</body>
+</html>
